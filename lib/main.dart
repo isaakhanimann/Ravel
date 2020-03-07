@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ravel/screens/navigation_screen.dart';
 import 'package:ravel/services/auth_service.dart';
 import 'package:ravel/services/firestore_service.dart';
 import 'package:ravel/services/storage_service.dart';
-import 'screens/map_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -38,7 +38,7 @@ class Ravel extends StatelessWidget {
           barBackgroundColor: CupertinoColors.white,
           scaffoldBackgroundColor: CupertinoColors.white,
         ),
-        home: CupertinoPageScaffold(child: MapScreen()),
+        home: CupertinoPageScaffold(child: NavigationScreen()),
       ),
     );
   }

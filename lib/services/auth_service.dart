@@ -14,6 +14,11 @@ class AuthService {
     return _auth.onAuthStateChanged;
   }
 
+  Future<String> getCurrentUid() async {
+    final user = await _auth.currentUser();
+    return user?.uid;
+  }
+
   Future<FirebaseUser> getCurrentUser() async {
     final user = await _auth.currentUser();
     return user;

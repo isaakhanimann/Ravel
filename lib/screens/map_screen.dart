@@ -8,8 +8,6 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  GoogleMapController mapController;
-
   Set<Marker> markers;
   BitmapDescriptor customIcon;
 
@@ -23,35 +21,34 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return GoogleMap(
-      onTap: (pos) {
-        Marker marker = Marker(
-          markerId: MarkerId('1'),
-          icon: customIcon,
-          position: pos,
-          infoWindow: InfoWindow(
-              title: 'Description of Marker',
-              snippet: 'Click to Edit',
-              onTap: () {
-                Navigator.of(context).push(
-                  CupertinoPageRoute<void>(
-                    builder: (context) {
-                      return AddBookContentScreen();
-                    },
-                  ),
-                );
-              }),
-        );
-        setState(() {
-          markers.add(marker);
-        });
-      },
+      onTap: _onTapMap,
       initialCameraPosition:
-          CameraPosition(target: LatLng(24.142, -110.321), zoom: 5),
-      onMapCreated: (GoogleMapController controller) {},
+          CameraPosition(target: LatLng(24.142, -110.321), zoom: 4),
       markers: markers,
-      myLocationEnabled: true,
-      compassEnabled: true,
     );
+  }
+
+  _onTapMap(LatLng position) async {
+    Marker marker = Marker(
+      markerId: MarkerId('1'),
+      icon: customIcon,
+      position: position,
+      infoWindow: InfoWindow(
+          title: 'Description of Marker',
+          snippet: 'Click to Edit',
+          onTap: () {
+            Navigator.of(context).push(
+              CupertinoPageRoute<void>(
+                builder: (context) {
+                  return AddBookContentScreen();
+                },
+              ),
+            );
+          }),
+    );
+    setState(() {
+      markers.add(marker);
+    });
   }
 
   _setCustomMapPin() async {
