@@ -41,5 +41,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<value>So Ravel can track your location while you use the app</value>
+	<key>NSLocationAlwaysUsageDescription</key>
+    <value>So Ravel can track your location at all times</value>
 </dict>
 </plist>

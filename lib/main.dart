@@ -20,9 +20,20 @@ class Ravel extends StatelessWidget {
         barBackgroundColor: CupertinoColors.white,
         scaffoldBackgroundColor: CupertinoColors.white,
       ),
-      home: Container(
-          color: CupertinoColors.activeBlue,
-          child: Center(child: Text('Hello'))),
+      home: CupertinoPageScaffold(child: Center(child: Text('Hello'))),
     );
+  }
+}
+
+
+class FireMap extends StatefulWidget {
+  @override
+  _FireMapState createState() => _FireMapState();
+}
+
+class _FireMapState extends State<FireMap> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
