@@ -41,28 +41,24 @@ class _FireMapState extends State<FireMap> {
   @override
   void initState() {
     super.initState();
+    _setCustomMapPin();
     markers = Set.from([]);
   }
 
-  _createMarker(context) async {
+  _setCustomMapPin() async {
     if (customIcon == null) {
-      ImageConfiguration configuration = createLocalImageConfiguration(context);
       BitmapDescriptor icon = await BitmapDescriptor.fromAssetImage(
-          configuration, 'assets/book_icon.png');
-      setState(() {
-        customIcon = icon;
-      });
+          ImageConfiguration(devicePixelRatio: 10), 'assets/book.png');
+      customIcon = icon;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    _createMarker(context);
     return Stack(
       children: <Widget>[
         GoogleMap(
           onTap: (pos) {
-            print(pos);
             Marker marker = Marker(
                 markerId: MarkerId('1'), icon: customIcon, position: pos);
             setState(() {
