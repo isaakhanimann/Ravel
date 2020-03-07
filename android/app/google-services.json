@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "997075511386",
+    "firebase_url": "https://ravel-85b75.firebaseio.com",
+    "project_id": "ravel-85b75",
+    "storage_bucket": "ravel-85b75.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997075511386:android:1b42ba9e33314601829063",
+        "android_client_info": {
+          "package_name": "com.isaakhanimann.ravel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "997075511386-qv9oq0rgrim3njesbrhb3i8phbosd0u9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3mBblTZyrV-AY8QULufLOX-gH6QfjILg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997075511386-qv9oq0rgrim3njesbrhb3i8phbosd0u9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

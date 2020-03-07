@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() async {
   // This app is designed only to work vertically, so we limit
@@ -20,11 +22,10 @@ class Ravel extends StatelessWidget {
         barBackgroundColor: CupertinoColors.white,
         scaffoldBackgroundColor: CupertinoColors.white,
       ),
-      home: CupertinoPageScaffold(child: Center(child: Text('Hello'))),
+      home: CupertinoPageScaffold(child: FireMap()),
     );
   }
 }
-
 
 class FireMap extends StatefulWidget {
   @override
@@ -32,8 +33,44 @@ class FireMap extends StatefulWidget {
 }
 
 class _FireMapState extends State<FireMap> {
+  GoogleMapController mapController;
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Stack(
+      children: <Widget>[
+        GoogleMap(
+          initialCameraPosition:
+              CameraPosition(target: LatLng(24.142, -110.321), zoom: 15),
+          onMapCreated: _onMapCreated,
+          myLocationEnabled: true,
+          compassEnabled: true,
+        ),
+        Positioned(
+          bottom: 50,
+          right: 10,
+          child: FlatButton(
+            onPressed: _addMarker,
+            color: Colors.green,
+            child: Icon(
+              Icons.pin_drop,
+              color: Colors.white,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  _onMapCreated(GoogleMapController controller) {
+    setState(() {
+      mapController = controller;
+    });
+  }
+
+  _addMarker() {
+//    var marker = Marker(
+//      position: mapController.
+//    )
   }
 }
