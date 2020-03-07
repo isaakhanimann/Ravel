@@ -35,14 +35,44 @@ class FireMap extends StatefulWidget {
 class _FireMapState extends State<FireMap> {
   GoogleMapController mapController;
 
+  Set<Marker> markers;
+  BitmapDescriptor customIcon;
+
+  @override
+  void initState() {
+    super.initState();
+    markers = Set.from([]);
+  }
+
+  _createMarker(context) async {
+    if (customIcon == null) {
+      ImageConfiguration configuration = createLocalImageConfiguration(context);
+      BitmapDescriptor icon = await BitmapDescriptor.fromAssetImage(
+          configuration, 'assets/book_icon.png');
+      setState(() {
+        customIcon = icon;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _createMarker(context);
     return Stack(
       children: <Widget>[
         GoogleMap(
+          onTap: (pos) {
+            print(pos);
+            Marker marker = Marker(
+                markerId: MarkerId('1'), icon: customIcon, position: pos);
+            setState(() {
+              markers.add(marker);
+            });
+          },
           initialCameraPosition:
-              CameraPosition(target: LatLng(24.142, -110.321), zoom: 15),
-          onMapCreated: _onMapCreated,
+              CameraPosition(target: LatLng(24.142, -110.321), zoom: 10),
+          onMapCreated: (GoogleMapController controller) {},
+          markers: markers,
           myLocationEnabled: true,
           compassEnabled: true,
         ),
@@ -50,7 +80,7 @@ class _FireMapState extends State<FireMap> {
           bottom: 50,
           right: 10,
           child: FlatButton(
-            onPressed: _addMarker,
+            onPressed: () {},
             color: Colors.green,
             child: Icon(
               Icons.pin_drop,
@@ -60,17 +90,5 @@ class _FireMapState extends State<FireMap> {
         )
       ],
     );
-  }
-
-  _onMapCreated(GoogleMapController controller) {
-    setState(() {
-      mapController = controller;
-    });
-  }
-
-  _addMarker() {
-//    var marker = Marker(
-//      position: mapController.
-//    )
   }
 }

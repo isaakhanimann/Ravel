@@ -170,42 +170,42 @@ PODS:
     - Flutter
   - cloud_firestore_web (0.1.0):
     - Flutter
-  - Firebase/Core (6.15.0):
+  - Firebase/Core (6.18.0):
     - Firebase/CoreOnly
-    - FirebaseAnalytics (= 6.2.1)
-  - Firebase/CoreOnly (6.15.0):
-    - FirebaseCore (= 6.6.0)
-  - Firebase/Firestore (6.15.0):
+    - FirebaseAnalytics (= 6.3.0)
+  - Firebase/CoreOnly (6.18.0):
+    - FirebaseCore (= 6.6.3)
+  - Firebase/Firestore (6.18.0):
     - Firebase/CoreOnly
-    - FirebaseFirestore (~> 1.9.0)
+    - FirebaseFirestore (~> 1.11.0)
   - firebase_core (0.0.1):
     - Firebase/Core
     - Flutter
   - firebase_core_web (0.1.0):
     - Flutter
-  - FirebaseAnalytics (6.2.1):
+  - FirebaseAnalytics (6.3.0):
     - FirebaseCore (~> 6.6)
-    - FirebaseInstanceID (~> 4.3)
-    - GoogleAppMeasurement (= 6.2.1)
+    - FirebaseInstallations (~> 1.1)
+    - GoogleAppMeasurement (= 6.3.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
     - GoogleUtilities/MethodSwizzler (~> 6.0)
     - GoogleUtilities/Network (~> 6.0)
     - "GoogleUtilities/NSData+zlib (~> 6.0)"
     - nanopb (= 0.3.9011)
   - FirebaseAuthInterop (1.0.0)
-  - FirebaseCore (6.6.0):
+  - FirebaseCore (6.6.3):
     - FirebaseCoreDiagnostics (~> 1.2)
     - FirebaseCoreDiagnosticsInterop (~> 1.2)
     - GoogleUtilities/Environment (~> 6.5)
     - GoogleUtilities/Logger (~> 6.5)
-  - FirebaseCoreDiagnostics (1.2.0):
+  - FirebaseCoreDiagnostics (1.2.1):
     - FirebaseCoreDiagnosticsInterop (~> 1.2)
     - GoogleDataTransportCCTSupport (~> 1.3)
     - GoogleUtilities/Environment (~> 6.5)
     - GoogleUtilities/Logger (~> 6.5)
     - nanopb (~> 0.3.901)
   - FirebaseCoreDiagnosticsInterop (1.2.0)
-  - FirebaseFirestore (1.9.0):
+  - FirebaseFirestore (1.11.0):
     - abseil/algorithm (= 0.20190808)
     - abseil/base (= 0.20190808)
     - abseil/memory (= 0.20190808)
@@ -218,15 +218,10 @@ PODS:
     - "gRPC-C++ (= 0.0.9)"
     - leveldb-library (~> 1.22)
     - nanopb (~> 0.3.901)
-  - FirebaseInstallations (1.0.0):
+  - FirebaseInstallations (1.1.0):
     - FirebaseCore (~> 6.6)
     - GoogleUtilities/UserDefaults (~> 6.5)
     - PromisesObjC (~> 1.2)
-  - FirebaseInstanceID (4.3.0):
-    - FirebaseCore (~> 6.6)
-    - FirebaseInstallations (~> 1.0)
-    - GoogleUtilities/Environment (~> 6.5)
-    - GoogleUtilities/UserDefaults (~> 6.5)
   - Flutter (1.0.0)
   - flutter_plugin_android_lifecycle (0.0.1):
     - Flutter
@@ -235,38 +230,38 @@ PODS:
   - google_maps_flutter (0.0.1):
     - Flutter
     - GoogleMaps
-  - GoogleAppMeasurement (6.2.1):
+  - GoogleAppMeasurement (6.3.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
     - GoogleUtilities/MethodSwizzler (~> 6.0)
     - GoogleUtilities/Network (~> 6.0)
     - "GoogleUtilities/NSData+zlib (~> 6.0)"
     - nanopb (= 0.3.9011)
-  - GoogleDataTransport (3.3.0)
-  - GoogleDataTransportCCTSupport (1.3.0):
-    - GoogleDataTransport (~> 3.3)
+  - GoogleDataTransport (4.0.1)
+  - GoogleDataTransportCCTSupport (1.4.1):
+    - GoogleDataTransport (~> 4.0)
     - nanopb (~> 0.3.901)
-  - GoogleMaps (2.7.0):
-    - GoogleMaps/Maps (= 2.7.0)
-  - GoogleMaps/Base (2.7.0)
-  - GoogleMaps/Maps (2.7.0):
+  - GoogleMaps (3.8.0):
+    - GoogleMaps/Maps (= 3.8.0)
+  - GoogleMaps/Base (3.8.0)
+  - GoogleMaps/Maps (3.8.0):
     - GoogleMaps/Base
-  - GoogleUtilities/AppDelegateSwizzler (6.5.0):
+  - GoogleUtilities/AppDelegateSwizzler (6.5.1):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
-  - GoogleUtilities/Environment (6.5.0)
-  - GoogleUtilities/Logger (6.5.0):
+  - GoogleUtilities/Environment (6.5.1)
+  - GoogleUtilities/Logger (6.5.1):
     - GoogleUtilities/Environment
-  - GoogleUtilities/MethodSwizzler (6.5.0):
+  - GoogleUtilities/MethodSwizzler (6.5.1):
     - GoogleUtilities/Logger
-  - GoogleUtilities/Network (6.5.0):
+  - GoogleUtilities/Network (6.5.1):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (6.5.0)"
-  - GoogleUtilities/Reachability (6.5.0):
+  - "GoogleUtilities/NSData+zlib (6.5.1)"
+  - GoogleUtilities/Reachability (6.5.1):
     - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (6.5.0):
+  - GoogleUtilities/UserDefaults (6.5.1):
     - GoogleUtilities/Logger
   - "gRPC-C++ (0.0.9)":
     - "gRPC-C++/Implementation (= 0.0.9)"
@@ -314,7 +309,6 @@ SPEC REPOS:
     - FirebaseCoreDiagnosticsInterop
     - FirebaseFirestore
     - FirebaseInstallations
-    - FirebaseInstanceID
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleDataTransportCCTSupport
@@ -349,32 +343,31 @@ SPEC CHECKSUMS:
   BoringSSL-GRPC: db8764df3204ccea016e1c8dd15d9a9ad63ff318
   cloud_firestore: 85aabb8ad61987d6d139f8788ff86229c3506a2f
   cloud_firestore_web: 9ec3dc7f5f98de5129339802d491c1204462bfec
-  Firebase: 5d77105d9740a07ca6b16927ca971db7e860faaf
+  Firebase: 0490eca762a72e4f1582319539153897f1508dee
   firebase_core: dc539d4bdc69894823e4a6e557034a9e48960f21
   firebase_core_web: d501d8b946b60c8af265428ce483b0fff5ad52d1
-  FirebaseAnalytics: e83e64b1231dedcd9ddd4bdecd9bcfd6ba341679
+  FirebaseAnalytics: 058d71e714a1a6804d9e0f25e3bb18e377a51579
   FirebaseAuthInterop: 0ffa57668be100582bb7643d4fcb7615496c41fc
-  FirebaseCore: 4aeb81ff53dcd9a3634ca725dc1fb8c2a4622046
-  FirebaseCoreDiagnostics: 5e78803ab276bc5b50340e3c539c06c3de35c649
+  FirebaseCore: 78276943ad85e616dfa54dafa6c89512987d9d60
+  FirebaseCoreDiagnostics: 2109d10c35e8289b1ee6cabf44d9ffb055620194
   FirebaseCoreDiagnosticsInterop: 296e2c5f5314500a850ad0b83e9e7c10b011a850
-  FirebaseFirestore: b7e6adda31974dbd259fc25b541e8850420c92ed
-  FirebaseInstallations: ae1dbf899b1f071b1f93dff78f748380bb6616d0
-  FirebaseInstanceID: 6668efc1655a4052c083f287a7141f1ead12f9c2
+  FirebaseFirestore: a23d596ae3a8c13d3b8353b565d2adfb690f9032
+  FirebaseInstallations: 575cd32f2aec0feeb0e44f5d0110a09e5e60b47b
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_plugin_android_lifecycle: 47de533a02850f070f5696a623995e93eddcdb9b
   geoflutterfire: 2a6493e01fb6eef1a6c9046b1baf9a943d0c5ffe
   google_maps_flutter: d0dd62f5a7d39bae61057eb9f52dd778d99c7c6c
-  GoogleAppMeasurement: a08a43b8677b95ed51fcef880e36737334d804fd
-  GoogleDataTransport: 574a983e829327d7c18f2627f65d9e80164ea8a4
-  GoogleDataTransportCCTSupport: cad3cd6cdbdbad6b5c2c9206ec413402755faaaa
-  GoogleMaps: f79af95cb24d869457b1f961c93d3ce8b2f3b848
-  GoogleUtilities: f8de7ddf8c706f58e9b405d53e38bbdaa2731e5a
+  GoogleAppMeasurement: 39ecba10918b21c83877d392246157f65db351cf
+  GoogleDataTransport: 653963cf5be60fb59cf051e070f0836fdc305f81
+  GoogleDataTransportCCTSupport: 84e4d4bbab642f2e9d83ee65d78aca2b5527d314
+  GoogleMaps: 7c8d66d70e4e8c300f43a7219d8fdaad7b325a9a
+  GoogleUtilities: 06eb53bb579efe7099152735900dd04bf09e7275
   "gRPC-C++": 9dfe7b44821e7b3e44aacad2af29d2c21f7cde83
   gRPC-Core: c9aef9a261a1247e881b18059b84d597293c9947
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   PromisesObjC: c119f3cd559f50b7ae681fa59dc1acd19173b7e6
 
-PODFILE CHECKSUM: 1b66dae606f75376c5f2135a8290850eeb09ae83
+PODFILE CHECKSUM: e45c292f618eeca3034958d33b444b6e1249b55f
 
 COCOAPODS: 1.8.4
