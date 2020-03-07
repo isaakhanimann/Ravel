@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ravel/models/book.dart';
 
-class FirebaseCloudFirestoreService {
+class FirestoreService {
   final _fireStore = Firestore.instance;
 
   Future<void> addBook({Book book}) async {

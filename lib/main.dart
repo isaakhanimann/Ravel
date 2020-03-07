@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ravel/services/auth_service.dart';
+import 'package:ravel/services/firestore_service.dart';
+import 'package:ravel/services/storage_service.dart';
 import 'screens/map_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -18,26 +21,14 @@ class Ravel extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<FirebaseAuthService>(
-          create: (_) => FirebaseAuthService(),
+        Provider<AuthService>(
+          create: (_) => AuthService(),
         ),
-        Provider<FirebaseCloudFirestoreService>(
-          create: (_) => FirebaseCloudFirestoreService(),
+        Provider<FirestoreService>(
+          create: (_) => FirestoreService(),
         ),
-        Provider<FirebaseStorageService>(
-          create: (_) => FirebaseStorageService(),
-        ),
-        Provider<ImagePickerService>(
-          create: (_) => ImagePickerService(),
-        ),
-        Provider<LocationService>(
-          create: (_) => LocationService(),
-        ),
-        Provider<FirebaseCloudMessaging>(
-          create: (_) => FirebaseCloudMessaging(),
-        ),
-        Provider<PreferencesService>(
-          create: (_) => PreferencesService(),
+        Provider<StorageService>(
+          create: (_) => StorageService(),
         ),
       ],
       child: CupertinoApp(
