@@ -8,6 +8,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:997075511386:android:46946d46a061ab83829063",
+        "android_client_info": {
+          "package_name": "co.isaakhanimann.ravel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "997075511386-qv9oq0rgrim3njesbrhb3i8phbosd0u9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3mBblTZyrV-AY8QULufLOX-gH6QfjILg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997075511386-qv9oq0rgrim3njesbrhb3i8phbosd0u9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "997075511386-l2uphfskch0parqmk96vcmidk3lhqh02.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "co.isaakhanimann.ravel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:997075511386:android:1b42ba9e33314601829063",
         "android_client_info": {
           "package_name": "com.isaakhanimann.ravel"
@@ -30,6 +66,13 @@
             {
               "client_id": "997075511386-qv9oq0rgrim3njesbrhb3i8phbosd0u9.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "997075511386-l2uphfskch0parqmk96vcmidk3lhqh02.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "co.isaakhanimann.ravel"
+              }
             }
           ]
         }

@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>997075511386-l07ghptoplo6145hmir51sak2mmtorjs.apps.googleusercontent.com</string>
+	<string>997075511386-l2uphfskch0parqmk96vcmidk3lhqh02.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.997075511386-l07ghptoplo6145hmir51sak2mmtorjs</string>
+	<string>com.googleusercontent.apps.997075511386-l2uphfskch0parqmk96vcmidk3lhqh02</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDSBiHT0kNiRkag_XPmM2WwuZsh5wj2vfw</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.isaakhanimann.ravel</string>
+	<string>co.isaakhanimann.ravel</string>
 	<key>PROJECT_ID</key>
 	<string>ravel-85b75</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +29,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:997075511386:ios:2ff16c7571e122f0829063</string>
+	<string>1:997075511386:ios:86543d0faabbebef829063</string>
 	<key>DATABASE_URL</key>
 	<string>https://ravel-85b75.firebaseio.com</string>
 </dict>

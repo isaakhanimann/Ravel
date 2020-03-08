@@ -1,4 +1,4 @@
-package com.isaakhanimann.ravel
+package co.isaakhanimann.ravel
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
