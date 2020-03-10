@@ -5,20 +5,15 @@ import 'package:ravel/screens/navigation_screen.dart';
 import 'package:ravel/services/auth_service.dart';
 import 'package:ravel/services/firestore_service.dart';
 import 'package:ravel/services/storage_service.dart';
-import 'services/apple_sign_in_available.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   // This app is designed only to work vertically, so we limit
   // orientations to portrait up and down.
   WidgetsFlutterBinding.ensureInitialized();
-  final isAppleSignInAvailable = await AppleSignInAvailable.check();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  return runApp(Provider<AppleSignInAvailable>.value(
-    value: isAppleSignInAvailable,
-    child: Ravel(),
-  ));
+  return runApp(Ravel());
 }
 
 class Ravel extends StatelessWidget {
