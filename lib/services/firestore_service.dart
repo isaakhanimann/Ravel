@@ -15,22 +15,23 @@ class FirestoreService {
   }
 
   Future<void> updateBook({Book book}) async {
+    //if the book should be added its bookId should be one that doesn't exist yet, e.g. null
     try {
-      await _fireStore
-          .collection('books')
-          .document(book.bookId)
-          .setData(book.toMap(), merge: true);
+      DocumentReference ref =
+          _fireStore.collection('books').document(book.bookId);
+      book.bookId = ref.documentID;
+      await ref.setData(book.toMap(), merge: true);
     } catch (e) {
       print('Could not update book = $book');
       print(e);
     }
   }
 
-  Stream<List<Book>> getBooksStream({String uid}) {
+  Stream<List<Book>> getStreamOfBooks({String uid}) {
     try {
       Stream<List<Book>> booksStream = _fireStore
           .collection('books')
-          .where('owner', isEqualTo: uid)
+          .where('ownerUid', isEqualTo: uid)
           .snapshots()
           .map((snap) => snap.documents
               .map((doc) => Book.fromMap(map: doc.data))
