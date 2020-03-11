@@ -22,8 +22,8 @@ class _MapScreenState extends State<MapScreen> {
     _setCustomPin();
     final firestoreService =
         Provider.of<FirestoreService>(context, listen: false);
-
-    streamOfBooks = firestoreService.getStreamOfBooks();
+    final loggedInUid = Provider.of<String>(context, listen: false);
+    streamOfBooks = firestoreService.getStreamOfBooks(uid: loggedInUid);
   }
 
   @override
