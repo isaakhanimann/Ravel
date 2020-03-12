@@ -31,11 +31,10 @@ class Ravel extends StatelessWidget {
           create: (_) => StorageService(),
         ),
       ],
-      child: CupertinoApp(
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: CupertinoThemeData(
+        theme: ThemeData(
           brightness: Brightness.light,
-          barBackgroundColor: CupertinoColors.white,
           scaffoldBackgroundColor: CupertinoColors.white,
         ),
         home: CupertinoPageScaffold(child: NavigationScreen()),

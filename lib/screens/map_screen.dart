@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:ravel/constants.dart';
 import 'package:ravel/screens/add_book_content_screen.dart';
 import 'package:ravel/models/book.dart';
 import 'package:provider/provider.dart';
 import 'package:ravel/services/firestore_service.dart';
+import 'package:flutter/material.dart';
 
 class MapScreen extends StatefulWidget {
   @override
@@ -58,7 +60,26 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   _onTapMap(LatLng position) async {
-    _addBook(position: position);
+    showGeneralDialog(
+        barrierColor: Colors.white.withOpacity(0.3),
+        transitionBuilder: (context, a1, a2, widget) {
+          return Transform.scale(
+            scale: a1.value,
+            child: Opacity(
+              opacity: a1.value,
+              child: DayPickerDialog(
+                addBook: () {
+                  _addBook(position: position);
+                },
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: true,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {});
   }
 
   _addBook({LatLng position}) async {
@@ -108,5 +129,92 @@ class _MapScreenState extends State<MapScreen> {
           ImageConfiguration(devicePixelRatio: 10), 'assets/book.png');
       customPin = icon;
     }
+  }
+}
+
+class DayPickerDialog extends StatefulWidget {
+  Function addBook;
+
+  DayPickerDialog({@required this.addBook});
+
+  @override
+  _DayPickerDialogState createState() => _DayPickerDialogState();
+}
+
+class _DayPickerDialogState extends State<DayPickerDialog> {
+  final List<Text> items = [];
+  int selectedNumber = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    for (int i = 1; i < 21; i++) {
+      items.add(Text(i.toString()));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      elevation: 0,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              'How many days do you want to spend there?',
+              style: TextStyle(fontSize: 25),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 120,
+              child: CupertinoPicker(
+                  backgroundColor: kYellow,
+                  itemExtent: 30,
+                  onSelectedItemChanged: _onSelectedItemChanged,
+                  children: items),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                CupertinoButton(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: kDarkBlue,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                CupertinoButton(
+                  child: Text(
+                    'Add',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: kDarkBlue,
+                    ),
+                  ),
+                  onPressed: () async {
+                    await widget.addBook();
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+      backgroundColor: kYellow,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20))),
+    );
+  }
+
+  _onSelectedItemChanged(int indexOfItem) {
+    selectedNumber = indexOfItem + 1;
   }
 }
