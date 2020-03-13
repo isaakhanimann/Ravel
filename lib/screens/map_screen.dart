@@ -49,6 +49,9 @@ class _MapScreenState extends State<MapScreen> {
             children: <Widget>[
               GoogleMap(
                 onTap: _onTapMap,
+                myLocationEnabled: false,
+                myLocationButtonEnabled: false,
+                compassEnabled: false,
                 initialCameraPosition:
                     CameraPosition(target: LatLng(24.142, -110.321), zoom: 4),
                 markers: markers,

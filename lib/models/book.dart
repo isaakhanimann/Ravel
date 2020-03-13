@@ -7,6 +7,7 @@ class Book {
   int numberOfPages;
   String content;
   GeoPoint location;
+  String city;
   var whenCreated;
 
   Book(
@@ -16,6 +17,7 @@ class Book {
       this.numberOfPages = 3,
       this.content,
       this.location,
+      this.city,
       this.whenCreated});
 
   Book.fromMap({Map<String, dynamic> map}) {
@@ -25,6 +27,7 @@ class Book {
     this.numberOfPages = map['numberOfPages'] ?? 3;
     this.content = map['content'];
     this.location = map['location'];
+    this.city = map['city'];
     this.whenCreated = map['whenCreated']?.toDate();
   }
 
@@ -36,6 +39,7 @@ class Book {
       'numberOfPages': numberOfPages,
       'content': content,
       'location': location,
+      'city': city,
       'whenCreated': whenCreated,
     };
   }
@@ -48,6 +52,7 @@ class Book {
     toPrint += 'numberOfPages: $numberOfPages, ';
     toPrint += 'content: $content, ';
     toPrint += 'location: $location, ';
+    toPrint += 'city: $city, ';
     toPrint += 'whenCreated: $whenCreated }\n';
     return toPrint;
   }
