@@ -2,18 +2,10 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:ravel/models/book.dart';
+import 'package:ravel/models/page.dart';
 
 class FirestoreService {
   final _fireStore = Firestore.instance;
-
-  addBook({@required Book book}) async {
-    try {
-      await _fireStore.collection('books').add(book.toMap());
-    } catch (e) {
-      print('Could not add book = $book');
-      print(e);
-    }
-  }
 
   deleteBook({@required Book book}) async {
     //the whole book has to be passed because firestore needs to verify that the owner is the loggedInUser
@@ -51,6 +43,30 @@ class FirestoreService {
     } catch (e) {
       print('Could not get stream of books with uid = $uid');
       print(e);
+      return null;
+    }
+  }
+
+  addPage({@required String bookId, @required Page page}) async {
+    try {
+      DocumentReference ref = _fireStore
+          .document('books/$bookId/pages/' + page.pageNumber.toString());
+      await ref.setData(page.toMap(), merge: true);
+    } catch (e) {
+      print('Could not upload page');
+    }
+  }
+
+  Future<Page> getPage(
+      {@required String bookId, @required int pageNumber}) async {
+    try {
+      DocumentSnapshot document = await _fireStore
+          .document('books/$bookId/pages/' + pageNumber.toString())
+          .get();
+      Page page = Page.fromMap(map: document.data);
+      return page;
+    } catch (e) {
+      print('Could not get page');
       return null;
     }
   }
