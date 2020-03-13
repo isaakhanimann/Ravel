@@ -44,6 +44,12 @@ class _AddBookContentScreenState extends State<AddBookContentScreen> {
                 maxLines: 10,
                 minLines: 1,
               ),
+              Expanded(
+                child: Container(
+                  color: Colors.green,
+                ),
+              ),
+              ImagesSection(),
               CupertinoButton(
                   child: Text('Add pdf'), onPressed: _onAddButtonPressed)
             ],
@@ -59,6 +65,58 @@ class _AddBookContentScreenState extends State<AddBookContentScreen> {
 
   _onAddButtonPressed() async {
     //get images and save them in the state
+  }
+}
+
+class ImagesSection extends StatelessWidget {
+  const ImagesSection({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 120,
+      child: Wrap(
+        children: <Widget>[
+          Container(
+            color: Colors.blue,
+            height: 60,
+            width: 60,
+          ),
+          Container(
+            color: Colors.yellow,
+            height: 60,
+            width: 60,
+          ),
+          Container(
+            color: Colors.green,
+            height: 60,
+            width: 60,
+          ),
+          Container(
+            color: Colors.brown,
+            height: 60,
+            width: 60,
+          ),
+          Container(
+            color: Colors.red,
+            height: 60,
+            width: 60,
+          ),
+          Container(
+            color: Colors.pink,
+            height: 60,
+            width: 60,
+          ),
+          Container(
+            color: Colors.purple,
+            height: 60,
+            width: 60,
+          ),
+        ],
+      ),
+    );
   }
 }
 
