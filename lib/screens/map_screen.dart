@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:ravel/constants.dart';
-import 'package:ravel/screens/add_book_content_screen.dart';
+import 'package:ravel/screens/add_book_content_screens.dart';
 import 'package:ravel/models/book.dart';
 import 'package:provider/provider.dart';
 import 'package:ravel/services/firestore_service.dart';
@@ -232,7 +232,7 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
                     Navigator.of(context).push(
                       CupertinoPageRoute<void>(
                         builder: (context) {
-                          return AddBookContentScreen(
+                          return AddBookContentScreens(
                             book: book,
                           );
                         },
@@ -334,7 +334,7 @@ class BookInfoSheet extends StatelessWidget {
                   Navigator.of(context).push(
                     CupertinoPageRoute<void>(
                       builder: (context) {
-                        return AddBookContentScreen(
+                        return AddBookContentScreens(
                           book: book,
                         );
                       },

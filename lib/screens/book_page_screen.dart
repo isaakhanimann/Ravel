@@ -1,32 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ravel/models/book.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
-class AddBookContentScreen extends StatefulWidget {
-  final Book book;
+class BookPageScreen extends StatefulWidget {
+  final int pageNumber;
 
-  AddBookContentScreen({@required this.book});
-
+  BookPageScreen({@required this.pageNumber});
   @override
-  _AddBookContentScreenState createState() => _AddBookContentScreenState();
+  _BookPageScreenState createState() => _BookPageScreenState();
 }
 
-class _AddBookContentScreenState extends State<AddBookContentScreen> {
-  final _pageController = PageController();
-
+class _BookPageScreenState extends State<BookPageScreen> {
   @override
   Widget build(BuildContext context) {
-    return PageView.builder(
-      controller: _pageController,
-      itemBuilder: (context, position) {
-        return _buildPage(pageNumber: position);
-      },
-      itemCount: widget.book.numberOfPages,
-    );
-  }
-
-  Widget _buildPage({@required int pageNumber}) {
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -35,7 +21,7 @@ class _AddBookContentScreenState extends State<AddBookContentScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Header(
-                pageNumber: pageNumber,
+                pageNumber: widget.pageNumber,
                 saveEverything: _saveEverything,
               ),
               CupertinoTextField(
