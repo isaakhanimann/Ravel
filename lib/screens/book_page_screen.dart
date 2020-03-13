@@ -39,7 +39,25 @@ class _BookPageScreenState extends State<BookPageScreen> {
                 pageNumber: widget.pageNumber,
                 saveEverything: _saveEverything,
               ),
-              Expanded(child: PageBody(futurePage: futurePage)),
+              Expanded(
+                child: FutureBuilder(
+                  future: futurePage,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return CupertinoActivityIndicator();
+                    }
+                    if (snapshot.hasError) {
+                      return Container(
+                        color: Colors.red,
+                        child: const Text('Something went wrong'),
+                      );
+                    }
+                    Page page = snapshot.data;
+
+                    return PageBody(page: page);
+                  },
+                ),
+              ),
             ],
           ),
         ),
@@ -53,46 +71,23 @@ class _BookPageScreenState extends State<BookPageScreen> {
 }
 
 class PageBody extends StatelessWidget {
-  final Future<Page> futurePage;
-  PageBody({@required this.futurePage});
+  final Page page;
+
+  PageBody({@required this.page});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: futurePage,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return CupertinoActivityIndicator();
-        }
-        if (snapshot.hasError) {
-          return Container(
-            color: Colors.red,
-            child: const Text('Something went wrong'),
-          );
-        }
-        Page page = snapshot.data;
-
-        return Column(
-          children: <Widget>[
-            PageText(initialText: page.text),
-            Expanded(
-              child: Container(
-                color: Colors.green,
-              ),
-            ),
-            CupertinoButton(
-              child: Text('Add Image'),
-              onPressed: _onAddButtonPressed,
-            ),
-            ImagesSection(),
-          ],
-        );
-      },
+    return Column(
+      children: <Widget>[
+        PageText(initialText: page.text),
+        Expanded(
+          child: Container(
+            color: Colors.green,
+          ),
+        ),
+        ImagesSection(),
+      ],
     );
-  }
-
-  _onAddButtonPressed() async {
-    //get images and save them in the state
   }
 }
 
@@ -137,48 +132,60 @@ class _ImagesSectionState extends State<ImagesSection> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 120,
-      child: Wrap(
-        children: <Widget>[
-          Container(
-            color: Colors.blue,
-            height: 60,
-            width: 60,
+    return Column(
+      children: <Widget>[
+        CupertinoButton(
+          child: Text('Add Image'),
+          onPressed: _onAddButtonPressed,
+        ),
+        SizedBox(
+          height: 120,
+          child: Wrap(
+            children: <Widget>[
+              Container(
+                color: Colors.blue,
+                height: 60,
+                width: 60,
+              ),
+              Container(
+                color: Colors.yellow,
+                height: 60,
+                width: 60,
+              ),
+              Container(
+                color: Colors.green,
+                height: 60,
+                width: 60,
+              ),
+              Container(
+                color: Colors.brown,
+                height: 60,
+                width: 60,
+              ),
+              Container(
+                color: Colors.red,
+                height: 60,
+                width: 60,
+              ),
+              Container(
+                color: Colors.pink,
+                height: 60,
+                width: 60,
+              ),
+              Container(
+                color: Colors.purple,
+                height: 60,
+                width: 60,
+              ),
+            ],
           ),
-          Container(
-            color: Colors.yellow,
-            height: 60,
-            width: 60,
-          ),
-          Container(
-            color: Colors.green,
-            height: 60,
-            width: 60,
-          ),
-          Container(
-            color: Colors.brown,
-            height: 60,
-            width: 60,
-          ),
-          Container(
-            color: Colors.red,
-            height: 60,
-            width: 60,
-          ),
-          Container(
-            color: Colors.pink,
-            height: 60,
-            width: 60,
-          ),
-          Container(
-            color: Colors.purple,
-            height: 60,
-            width: 60,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
+  }
+
+  _onAddButtonPressed() async {
+    //get images and save them in the state
   }
 }
 
