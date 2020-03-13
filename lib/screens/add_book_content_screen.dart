@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ravel/models/book.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 class AddBookContentScreen extends StatefulWidget {
   final Book book;
@@ -68,10 +69,13 @@ class _AddBookContentScreenState extends State<AddBookContentScreen> {
   }
 }
 
-class ImagesSection extends StatelessWidget {
-  const ImagesSection({
-    Key key,
-  }) : super(key: key);
+class ImagesSection extends StatefulWidget {
+  @override
+  _ImagesSectionState createState() => _ImagesSectionState();
+}
+
+class _ImagesSectionState extends State<ImagesSection> {
+  List<Asset> images = List<Asset>();
 
   @override
   Widget build(BuildContext context) {

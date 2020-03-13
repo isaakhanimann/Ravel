@@ -164,6 +164,11 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.3):
     - BoringSSL-GRPC/Interface (= 0.0.3)
   - BoringSSL-GRPC/Interface (0.0.3)
+  - BSGridCollectionViewLayout (1.2.5)
+  - BSImagePicker (2.10.3):
+    - BSGridCollectionViewLayout (= 1.2.5)
+    - BSImageView (= 1.0.3)
+  - BSImageView (1.0.3)
   - cloud_firestore (0.0.1):
     - Firebase/Core
     - Firebase/Firestore (~> 6.0)
@@ -312,6 +317,9 @@ PODS:
   - leveldb-library (1.22)
   - location_permissions (2.0.5):
     - Flutter
+  - multi_image_picker (4.6.3):
+    - BSImagePicker (~> 2.10.3)
+    - Flutter
   - nanopb (0.3.9011):
     - nanopb/decode (= 0.3.9011)
     - nanopb/encode (= 0.3.9011)
@@ -334,11 +342,15 @@ DEPENDENCIES:
   - google_api_availability (from `.symlinks/plugins/google_api_availability/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
+  - multi_image_picker (from `.symlinks/plugins/multi_image_picker/ios`)
 
 SPEC REPOS:
   trunk:
     - abseil
     - BoringSSL-GRPC
+    - BSGridCollectionViewLayout
+    - BSImagePicker
+    - BSImageView
     - Firebase
     - FirebaseAnalytics
     - FirebaseAuth
@@ -390,10 +402,15 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
   location_permissions:
     :path: ".symlinks/plugins/location_permissions/ios"
+  multi_image_picker:
+    :path: ".symlinks/plugins/multi_image_picker/ios"
 
 SPEC CHECKSUMS:
   abseil: 18063d773f5366ff8736a050fe035a28f635fd27
   BoringSSL-GRPC: db8764df3204ccea016e1c8dd15d9a9ad63ff318
+  BSGridCollectionViewLayout: 333dcb457a5a3bdd9212607ab5756553dcfe06cb
+  BSImagePicker: 07404254f2fcdaf5a2eb403c0f8c337267ce8738
+  BSImageView: a149459433a2687157d034c78e059d30ac7f2544
   cloud_firestore: 85aabb8ad61987d6d139f8788ff86229c3506a2f
   cloud_firestore_web: 9ec3dc7f5f98de5129339802d491c1204462bfec
   Firebase: 0490eca762a72e4f1582319539153897f1508dee
@@ -427,6 +444,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: cea130bbfe5a7edc8d06d3f0d17288c32ffe9925
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   location_permissions: 4a49d4e5bec5b653643e551ab77963cc99bb0e4a
+  multi_image_picker: b91a71242dfc28c46cae91c86774ba04ac8e7519
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   PromisesObjC: c119f3cd559f50b7ae681fa59dc1acd19173b7e6
 
