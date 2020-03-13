@@ -3,18 +3,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Book {
   String bookId;
   String ownerUid;
-  String title;
-  int numberOfPages;
-  String content;
+  String title = '';
+  int numberOfPages = 3;
+  String content = '';
   GeoPoint location;
-  String city;
+  String city = '';
   var whenCreated;
 
   Book(
       {this.bookId,
       this.ownerUid,
       this.title,
-      this.numberOfPages = 3,
+      this.numberOfPages,
       this.content,
       this.location,
       this.city,

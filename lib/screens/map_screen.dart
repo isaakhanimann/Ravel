@@ -7,6 +7,7 @@ import 'package:ravel/models/book.dart';
 import 'package:provider/provider.dart';
 import 'package:ravel/services/firestore_service.dart';
 import 'package:flutter/material.dart';
+import 'package:ravel/services/geocoding_service.dart';
 
 class MapScreen extends StatefulWidget {
   @override
@@ -219,8 +220,14 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
   }
 
   Future<Book> _addBook({LatLng position}) async {
+    final geocodingService =
+        Provider.of<GeocodingService>(context, listen: false);
+    String city = await geocodingService.getCity(
+        latitude: position.latitude, longitude: position.longitude);
+
     Book book = Book(
         ownerUid: widget.loggedInUid,
+        city: city,
         title: 'Title',
         numberOfPages: selectedNumber,
         content: 'Content',
@@ -252,7 +259,7 @@ class BookInfoSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
-            'Book',
+            book.city,
             style: kSheetTitle,
           ),
           SizedBox(

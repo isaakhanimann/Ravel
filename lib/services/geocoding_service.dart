@@ -6,9 +6,8 @@ class GeocodingService {
 
   Future<String> getCity(
       {@required double latitude, @required double longitude}) async {
-    List<Placemark> placemark =
-        await geoLocator.placemarkFromCoordinates(52.2165157, 6.9437819);
-
-    return 'cityname';
+    List<Placemark> placemarks =
+        await geoLocator.placemarkFromCoordinates(latitude, longitude);
+    return placemarks[0]?.locality;
   }
 }

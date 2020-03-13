@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:ravel/screens/navigation_screen.dart';
 import 'package:ravel/services/auth_service.dart';
 import 'package:ravel/services/firestore_service.dart';
+import 'package:ravel/services/geocoding_service.dart';
 import 'package:ravel/services/storage_service.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +30,9 @@ class Ravel extends StatelessWidget {
         ),
         Provider<StorageService>(
           create: (_) => StorageService(),
+        ),
+        Provider<GeocodingService>(
+          create: (_) => GeocodingService(),
         ),
       ],
       child: MaterialApp(
