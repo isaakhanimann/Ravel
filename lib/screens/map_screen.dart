@@ -136,11 +136,17 @@ class DayPickerSheet extends StatefulWidget {
 class _DayPickerSheetState extends State<DayPickerSheet> {
   final List<Text> items = [];
   FixedExtentScrollController scrollController;
+  Future<String> futureCity;
   int selectedNumber = 2;
 
   @override
   void initState() {
     super.initState();
+    final geocodingService =
+        Provider.of<GeocodingService>(context, listen: false);
+    futureCity = geocodingService.getCity(
+        latitude: widget.bookPosition.latitude,
+        longitude: widget.bookPosition.longitude);
     scrollController = FixedExtentScrollController(initialItem: selectedNumber);
     for (int i = 1; i < 21; i++) {
       items.add(Text(
@@ -158,9 +164,32 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
+            SizedBox(
+              height: 60,
+              child: FutureBuilder(
+                future: futureCity,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return CupertinoActivityIndicator();
+                  }
+                  if (snapshot.hasError) {
+                    return Container(
+                      color: Colors.red,
+                      child: const Text('Something went wrong'),
+                    );
+                  }
+                  String city = snapshot.data;
+                  if (city == null || city == '') {
+                    city = 'Unknown Place';
+                  }
+
+                  return Text(city, style: kSheetTitle);
+                },
+              ),
+            ),
             Text(
               'How many days do you want to spend there?',
-              style: kSheetTitle,
+              style: TextStyle(fontSize: 25, fontFamily: 'CatamaranSemiBold'),
               textAlign: TextAlign.center,
             ),
             SizedBox(
@@ -220,10 +249,7 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
   }
 
   Future<Book> _addBook({LatLng position}) async {
-    final geocodingService =
-        Provider.of<GeocodingService>(context, listen: false);
-    String city = await geocodingService.getCity(
-        latitude: position.latitude, longitude: position.longitude);
+    String city = await futureCity;
 
     Book book = Book(
         ownerUid: widget.loggedInUid,
