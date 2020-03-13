@@ -30,59 +30,51 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: streamOfBooks,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting ||
-            snapshot.connectionState == ConnectionState.none) {
-          showLoading = true;
-        }
+    return Scaffold(
+      body: StreamBuilder(
+        stream: streamOfBooks,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              snapshot.connectionState == ConnectionState.none) {
+            showLoading = true;
+          }
 
-        showLoading = false;
+          showLoading = false;
 
-        final List<Book> books = snapshot.data;
+          final List<Book> books = snapshot.data;
 
-        Set<Marker> markers = _convertBooksToMarkers(books: books);
+          Set<Marker> markers = _convertBooksToMarkers(books: books);
 
-        return Stack(
-          children: <Widget>[
-            GoogleMap(
-              onTap: _onTapMap,
-              initialCameraPosition:
-                  CameraPosition(target: LatLng(24.142, -110.321), zoom: 4),
-              markers: markers,
-            ),
-            if (showLoading) Center(child: CupertinoActivityIndicator())
-          ],
-        );
-      },
+          return Stack(
+            children: <Widget>[
+              GoogleMap(
+                onTap: _onTapMap,
+                initialCameraPosition:
+                    CameraPosition(target: LatLng(24.142, -110.321), zoom: 4),
+                markers: markers,
+              ),
+              if (showLoading) Center(child: CupertinoActivityIndicator())
+            ],
+          );
+        },
+      ),
     );
   }
 
   _onTapMap(LatLng position) async {
     String loggedInUid = Provider.of<String>(context, listen: false);
-    showGeneralDialog(
-        barrierColor: Colors.white.withOpacity(0.3),
-        transitionBuilder: (context, a1, a2, widget) {
-          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
-          return Transform(
-            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
-            child: Opacity(
-              opacity: a1.value,
-              child: widget,
-            ),
-          );
-        },
-        transitionDuration: Duration(milliseconds: 150),
-        barrierDismissible: true,
-        barrierLabel: '',
-        context: context,
-        pageBuilder: (context, animation1, animation2) {
-          return DayPickerDialog(
-            bookPosition: position,
-            loggedInUid: loggedInUid,
-          );
-        });
+
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30.0),
+      ),
+      backgroundColor: kBrightYellow,
+      builder: (context) => DayPickerDialog(
+        bookPosition: position,
+        loggedInUid: loggedInUid,
+      ),
+    );
   }
 
   Set<Marker> _convertBooksToMarkers({List<Book> books}) {
@@ -153,9 +145,8 @@ class _DayPickerDialogState extends State<DayPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      elevation: 0,
-      child: Padding(
+    return SafeArea(
+      child: Container(
         padding: const EdgeInsets.fromLTRB(20, 35, 20, 8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -223,9 +214,6 @@ class _DayPickerDialogState extends State<DayPickerDialog> {
           ],
         ),
       ),
-      backgroundColor: kBrightYellow,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20))),
     );
   }
 
