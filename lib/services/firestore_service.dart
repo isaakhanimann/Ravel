@@ -6,7 +6,7 @@ import 'package:ravel/models/book.dart';
 class FirestoreService {
   final _fireStore = Firestore.instance;
 
-  Future<void> addBook({@required Book book}) async {
+  addBook({@required Book book}) async {
     try {
       await _fireStore.collection('books').add(book.toMap());
     } catch (e) {
@@ -15,7 +15,17 @@ class FirestoreService {
     }
   }
 
-  Future<void> updateBook({@required Book book}) async {
+  deleteBook({@required Book book}) async {
+    //the whole book has to be passed because firestore needs to verify that the owner is the loggedInUser
+    try {
+      await _fireStore.collection('books').document(book.bookId).delete();
+    } catch (e) {
+      print('Could not delete book = $book');
+      print(e);
+    }
+  }
+
+  updateBook({@required Book book}) async {
     //if the book should be added its bookId should be one that doesn't exist yet, e.g. null
     try {
       DocumentReference ref =

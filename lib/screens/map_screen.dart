@@ -64,16 +64,29 @@ class _MapScreenState extends State<MapScreen> {
   _onTapMap(LatLng position) async {
     String loggedInUid = Provider.of<String>(context, listen: false);
 
+    _showBottomSheet(
+      child: DayPickerSheet(
+        bookPosition: position,
+        loggedInUid: loggedInUid,
+      ),
+    );
+  }
+
+  _onBookTapped({@required Book book}) {
+    _showBottomSheet(
+        child: BookInfoSheet(
+      book: book,
+    ));
+  }
+
+  _showBottomSheet({@required Widget child}) {
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30.0),
       ),
       backgroundColor: kBrightYellow,
-      builder: (context) => DayPickerDialog(
-        bookPosition: position,
-        loggedInUid: loggedInUid,
-      ),
+      builder: (context) => child,
     );
   }
 
@@ -87,20 +100,10 @@ class _MapScreenState extends State<MapScreen> {
             markerId: MarkerId(UniqueKey().toString()),
             icon: customPin,
             position: LatLng(book.location.latitude, book.location.longitude),
-            infoWindow: InfoWindow(
-                title: 'Description of Marker',
-                snippet: 'Click to Edit',
-                onTap: () {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute<void>(
-                      builder: (context) {
-                        return AddBookContentScreen(
-                          book: book,
-                        );
-                      },
-                    ),
-                  );
-                }),
+            draggable: true,
+            onTap: () {
+              _onBookTapped(book: book);
+            },
           ),
         )
         .toList();
@@ -116,17 +119,17 @@ class _MapScreenState extends State<MapScreen> {
   }
 }
 
-class DayPickerDialog extends StatefulWidget {
+class DayPickerSheet extends StatefulWidget {
   final LatLng bookPosition;
   final String loggedInUid;
 
-  DayPickerDialog({@required this.bookPosition, @required this.loggedInUid});
+  DayPickerSheet({@required this.bookPosition, @required this.loggedInUid});
 
   @override
-  _DayPickerDialogState createState() => _DayPickerDialogState();
+  _DayPickerSheetState createState() => _DayPickerSheetState();
 }
 
-class _DayPickerDialogState extends State<DayPickerDialog> {
+class _DayPickerSheetState extends State<DayPickerSheet> {
   final List<Text> items = [];
   FixedExtentScrollController scrollController;
   int selectedNumber = 2;
@@ -153,12 +156,7 @@ class _DayPickerDialogState extends State<DayPickerDialog> {
           children: <Widget>[
             Text(
               'How many days do you want to spend there?',
-              style: TextStyle(
-                fontSize: 25,
-                fontFamily: 'CatamaranBold',
-                height: 1.3,
-                color: kDarkGrey,
-              ),
+              style: kSheetTitle,
               textAlign: TextAlign.center,
             ),
             SizedBox(
@@ -234,5 +232,70 @@ class _DayPickerDialogState extends State<DayPickerDialog> {
 
   _onSelectedItemChanged(int indexOfItem) {
     selectedNumber = indexOfItem + 1;
+  }
+}
+
+class BookInfoSheet extends StatelessWidget {
+  final Book book;
+
+  BookInfoSheet({@required this.book});
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+        child: Container(
+      padding: const EdgeInsets.fromLTRB(20, 35, 20, 8),
+      child: Column(
+        children: <Widget>[
+          Text(
+            'Book',
+            style: kSheetTitle,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              CupertinoButton(
+                child: Text(
+                  'Delete',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'OpenSansRegular',
+                    color: kGreen,
+                  ),
+                ),
+                onPressed: () async {
+                  final firestoreService =
+                      Provider.of<FirestoreService>(context, listen: false);
+                  await firestoreService.deleteBook(book: book);
+                  Navigator.pop(context);
+                },
+              ),
+              CupertinoButton(
+                child: Text(
+                  'Edit',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'OpenSansBold',
+                    color: kGreen,
+                  ),
+                ),
+                onPressed: () async {
+                  Navigator.pop(context);
+                  Navigator.of(context).push(
+                    CupertinoPageRoute<void>(
+                      builder: (context) {
+                        return AddBookContentScreen(
+                          book: book,
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ],
+          )
+        ],
+      ),
+    ));
   }
 }
