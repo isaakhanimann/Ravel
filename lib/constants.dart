@@ -12,7 +12,7 @@ const kVeryLightGrey = Color(0xffECF0F1);
 //text styles
 
 const kSheetTitle = TextStyle(
-  fontSize: 25,
+  fontSize: 40,
   fontFamily: 'CatamaranBold',
   height: 1.3,
   color: kDarkGrey,

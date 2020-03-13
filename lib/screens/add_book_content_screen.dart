@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ravel/models/book.dart';
 
@@ -16,20 +17,31 @@ class _AddBookContentScreenState extends State<AddBookContentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: PageView.builder(
-      controller: _pageController,
-      itemBuilder: (context, position) {
-        return _buildPage(pageNumber: position);
-      },
-      itemCount: widget.book.numberOfPages,
-    ));
+      body: SafeArea(
+        child: PageView.builder(
+          controller: _pageController,
+          itemBuilder: (context, position) {
+            return _buildPage(pageNumber: position);
+          },
+          itemCount: widget.book.numberOfPages,
+        ),
+      ),
+    );
   }
 
   Widget _buildPage({@required int pageNumber}) {
-    return Container(
-      color: (pageNumber % 2 == 0) ? Colors.blue : Colors.green,
-      child: Center(
-        child: Text(pageNumber.toString()),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Column(
+        children: <Widget>[
+          Text(
+            'Day ${pageNumber + 1}',
+            style: TextStyle(fontSize: 40, fontFamily: 'CatamaranBold'),
+          ),
+          CupertinoTextField(
+            autofocus: true,
+          ),
+        ],
       ),
     );
   }
