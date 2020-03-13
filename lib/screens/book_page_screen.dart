@@ -1,21 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:ravel/models/page.dart';
 import 'package:provider/provider.dart';
 import 'package:ravel/services/firestore_service.dart';
+import 'package:ravel/services/storage_service.dart';
+import 'package:ravel/models/book.dart';
 
 class BookPageScreen extends StatefulWidget {
-  final String bookId;
+  final Book book;
   final int pageNumber;
 
-  BookPageScreen({@required this.bookId, @required this.pageNumber});
+  BookPageScreen({@required this.book, @required this.pageNumber});
   @override
   _BookPageScreenState createState() => _BookPageScreenState();
 }
 
 class _BookPageScreenState extends State<BookPageScreen> {
   Future<Page> futurePage;
+  Page editedPage;
+  List<Asset> images = [];
 
   @override
   void initState() {
@@ -23,7 +28,7 @@ class _BookPageScreenState extends State<BookPageScreen> {
     final firestoreService =
         Provider.of<FirestoreService>(context, listen: false);
     futurePage = firestoreService.getPage(
-        bookId: widget.bookId, pageNumber: widget.pageNumber);
+        bookId: widget.book.bookId, pageNumber: widget.pageNumber);
   }
 
   @override
@@ -52,9 +57,10 @@ class _BookPageScreenState extends State<BookPageScreen> {
                         child: const Text('Something went wrong'),
                       );
                     }
-                    Page page = snapshot.data;
+                    editedPage = snapshot.data;
 
-                    return PageBody(page: page);
+                    return Provider<Page>.value(
+                        value: editedPage, child: PageBody());
                   },
                 ),
               ),
@@ -67,16 +73,28 @@ class _BookPageScreenState extends State<BookPageScreen> {
 
   _saveEverything() async {
     //upload the page content (text and images that are stored in the state)
+    final firestoreService =
+        Provider.of<FirestoreService>(context, listen: false);
+    await firestoreService.updatePage(
+        bookId: widget.book.bookId, page: editedPage);
+
+    final storageService = Provider.of<StorageService>(context, listen: false);
+    for (Asset image in images) {
+      ByteData byteData = await image.getByteData();
+      List<int> imageData = byteData.buffer.asUint8List();
+      await storageService.uploadImage(
+          bookId: widget.book.bookId,
+          pageNumber: widget.pageNumber,
+          fileName: image.name,
+          image: imageData);
+    }
   }
 }
 
 class PageBody extends StatelessWidget {
-  final Page page;
-
-  PageBody({@required this.page});
-
   @override
   Widget build(BuildContext context) {
+    Page page = Provider.of<Page>(context);
     return Column(
       children: <Widget>[
         PageText(initialText: page.text),
@@ -128,8 +146,6 @@ class ImagesSection extends StatefulWidget {
 }
 
 class _ImagesSectionState extends State<ImagesSection> {
-  List<Asset> images = List<Asset>();
-
   @override
   Widget build(BuildContext context) {
     return Column(
