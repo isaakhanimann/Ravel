@@ -246,10 +246,24 @@ class BookInfoSheet extends StatelessWidget {
         child: Container(
       padding: const EdgeInsets.fromLTRB(20, 35, 20, 8),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
             'Book',
             style: kSheetTitle,
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            'Time of stay: ${book.numberOfPages.toString()} days',
+            style: TextStyle(
+              fontFamily: 'OpenSansRegular',
+              fontSize: 20,
+            ),
+          ),
+          SizedBox(
+            height: 20,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -260,7 +274,7 @@ class BookInfoSheet extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontFamily: 'OpenSansRegular',
-                    color: kGreen,
+                    color: kRed,
                   ),
                 ),
                 onPressed: () async {
