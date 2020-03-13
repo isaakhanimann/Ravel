@@ -135,11 +135,13 @@ class DayPickerDialog extends StatefulWidget {
 
 class _DayPickerDialogState extends State<DayPickerDialog> {
   final List<Text> items = [];
-  int selectedNumber = 1;
+  FixedExtentScrollController scrollController;
+  int selectedNumber = 2;
 
   @override
   void initState() {
     super.initState();
+    scrollController = FixedExtentScrollController(initialItem: selectedNumber);
     for (int i = 1; i < 21; i++) {
       items.add(Text(i.toString()));
     }
@@ -162,6 +164,7 @@ class _DayPickerDialogState extends State<DayPickerDialog> {
             SizedBox(
               height: 120,
               child: CupertinoPicker(
+                  scrollController: scrollController,
                   backgroundColor: kYellow,
                   itemExtent: 30,
                   onSelectedItemChanged: _onSelectedItemChanged,
@@ -219,6 +222,7 @@ class _DayPickerDialogState extends State<DayPickerDialog> {
     Book book = Book(
         ownerUid: widget.loggedInUid,
         title: 'Title',
+        numberOfPages: selectedNumber,
         content: 'Content',
         location: GeoPoint(position.latitude, position.longitude),
         whenCreated: FieldValue.serverTimestamp());

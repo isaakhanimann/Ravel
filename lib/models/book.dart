@@ -4,6 +4,7 @@ class Book {
   String bookId;
   String ownerUid;
   String title;
+  int numberOfPages;
   String content;
   GeoPoint location;
   var whenCreated;
@@ -12,6 +13,7 @@ class Book {
       {this.bookId,
       this.ownerUid,
       this.title,
+      this.numberOfPages = 3,
       this.content,
       this.location,
       this.whenCreated});
@@ -20,6 +22,7 @@ class Book {
     this.bookId = map['bookId'];
     this.ownerUid = map['ownerUid'];
     this.title = map['title'];
+    this.numberOfPages = map['numberOfPages'];
     this.content = map['content'];
     this.location = map['location'];
     this.whenCreated = map['whenCreated']?.toDate();
@@ -30,6 +33,7 @@ class Book {
       'bookId': bookId,
       'ownerUid': ownerUid,
       'title': title,
+      'numberOfPages': numberOfPages,
       'content': content,
       'location': location,
       'whenCreated': whenCreated,
@@ -41,6 +45,7 @@ class Book {
     String toPrint = '\n{ bookId: $bookId, ';
     toPrint += 'ownerUid: $ownerUid, ';
     toPrint += 'title: $title, ';
+    toPrint += 'numberOfPages: $numberOfPages, ';
     toPrint += 'content: $content, ';
     toPrint += 'location: $location, ';
     toPrint += 'whenCreated: $whenCreated }\n';
