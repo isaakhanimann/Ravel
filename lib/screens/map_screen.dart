@@ -60,6 +60,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   _onTapMap(LatLng position) async {
+    String loggedInUid = Provider.of<String>(context, listen: false);
     showGeneralDialog(
         barrierColor: Colors.white.withOpacity(0.3),
         transitionBuilder: (context, a1, a2, widget) {
@@ -67,11 +68,7 @@ class _MapScreenState extends State<MapScreen> {
             scale: a1.value,
             child: Opacity(
               opacity: a1.value,
-              child: DayPickerDialog(
-                addBook: () {
-                  _addBook(position: position);
-                },
-              ),
+              child: widget,
             ),
           );
         },
@@ -79,20 +76,12 @@ class _MapScreenState extends State<MapScreen> {
         barrierDismissible: true,
         barrierLabel: '',
         context: context,
-        pageBuilder: (context, animation1, animation2) {});
-  }
-
-  _addBook({LatLng position}) async {
-    String loggedInUid = Provider.of<String>(context, listen: false);
-    Book book = Book(
-        ownerUid: loggedInUid,
-        title: 'Title',
-        content: 'Content',
-        location: GeoPoint(position.latitude, position.longitude),
-        whenCreated: FieldValue.serverTimestamp());
-    final firestoreService =
-        Provider.of<FirestoreService>(context, listen: false);
-    await firestoreService.updateBook(book: book);
+        pageBuilder: (context, animation1, animation2) {
+          return DayPickerDialog(
+            bookPosition: position,
+            loggedInUid: loggedInUid,
+          );
+        });
   }
 
   Set<Marker> _convertBooksToMarkers({List<Book> books}) {
@@ -112,7 +101,9 @@ class _MapScreenState extends State<MapScreen> {
                   Navigator.of(context).push(
                     CupertinoPageRoute<void>(
                       builder: (context) {
-                        return AddBookContentScreen();
+                        return AddBookContentScreen(
+                          book: book,
+                        );
                       },
                     ),
                   );
@@ -133,9 +124,10 @@ class _MapScreenState extends State<MapScreen> {
 }
 
 class DayPickerDialog extends StatefulWidget {
-  Function addBook;
+  final LatLng bookPosition;
+  final String loggedInUid;
 
-  DayPickerDialog({@required this.addBook});
+  DayPickerDialog({@required this.bookPosition, @required this.loggedInUid});
 
   @override
   _DayPickerDialogState createState() => _DayPickerDialogState();
@@ -199,8 +191,17 @@ class _DayPickerDialogState extends State<DayPickerDialog> {
                     ),
                   ),
                   onPressed: () async {
-                    await widget.addBook();
+                    Book book = await _addBook(position: widget.bookPosition);
                     Navigator.pop(context);
+                    Navigator.of(context).push(
+                      CupertinoPageRoute<void>(
+                        builder: (context) {
+                          return AddBookContentScreen(
+                            book: book,
+                          );
+                        },
+                      ),
+                    );
                   },
                 ),
               ],
@@ -212,6 +213,20 @@ class _DayPickerDialogState extends State<DayPickerDialog> {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20))),
     );
+  }
+
+  Future<Book> _addBook({LatLng position}) async {
+    Book book = Book(
+        ownerUid: widget.loggedInUid,
+        title: 'Title',
+        content: 'Content',
+        location: GeoPoint(position.latitude, position.longitude),
+        whenCreated: FieldValue.serverTimestamp());
+    final firestoreService =
+        Provider.of<FirestoreService>(context, listen: false);
+    await firestoreService.updateBook(book: book);
+
+    return book;
   }
 
   _onSelectedItemChanged(int indexOfItem) {
