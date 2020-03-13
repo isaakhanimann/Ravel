@@ -158,7 +158,8 @@ class _DayPickerDialogState extends State<DayPickerDialog> {
           children: <Widget>[
             Text(
               'How many days do you want to spend there?',
-              style: TextStyle(fontSize: 25),
+              style: TextStyle(
+                  fontSize: 25, fontFamily: 'CatamaranBold', height: 1.3),
               textAlign: TextAlign.center,
             ),
             SizedBox(

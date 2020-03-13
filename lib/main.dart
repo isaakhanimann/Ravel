@@ -36,6 +36,11 @@ class Ravel extends StatelessWidget {
         theme: ThemeData(
           brightness: Brightness.light,
           scaffoldBackgroundColor: CupertinoColors.white,
+          textTheme: TextTheme(
+            headline: TextStyle(fontSize: 25.0, fontFamily: 'CatamaranBold'),
+            title: TextStyle(fontSize: 20.0, fontFamily: 'CatamaranBold'),
+            body1: TextStyle(fontSize: 12.0, fontFamily: 'OpenSansRegular'),
+          ),
         ),
         home: CupertinoPageScaffold(child: NavigationScreen()),
       ),
