@@ -7,12 +7,19 @@ import 'package:ravel/models/page.dart';
 class FirestoreService {
   final _fireStore = Firestore.instance;
 
-  deleteBook({@required Book book}) async {
-    //the whole book has to be passed because firestore needs to verify that the owner is the loggedInUser
+  addBookWithPages({@required Book book}) async {
     try {
-      await _fireStore.collection('books').document(book.bookId).delete();
+      DocumentReference ref = _fireStore
+          .collection('books')
+          .document(null); //if the books id is null its added
+      book.bookId = ref.documentID;
+      await ref.setData(book.toMap(), merge: true);
+      for (int i = 1; i <= book.numberOfPages; i++) {
+        Page page = Page(text: '', pageNumber: i, imageNames: []);
+        _addPage(bookId: book.bookId, page: page);
+      }
     } catch (e) {
-      print('Could not delete book = $book');
+      print('Could not add book = $book with pages');
       print(e);
     }
   }
@@ -26,6 +33,16 @@ class FirestoreService {
       await ref.setData(book.toMap(), merge: true);
     } catch (e) {
       print('Could not update book = $book');
+      print(e);
+    }
+  }
+
+  deleteBook({@required Book book}) async {
+    //the whole book has to be passed because firestore needs to verify that the owner is the loggedInUser
+    try {
+      await _fireStore.collection('books').document(book.bookId).delete();
+    } catch (e) {
+      print('Could not delete book = $book');
       print(e);
     }
   }
@@ -47,7 +64,7 @@ class FirestoreService {
     }
   }
 
-  addPage({@required String bookId, @required Page page}) async {
+  updatePage({@required String bookId, @required Page page}) async {
     try {
       DocumentReference ref = _fireStore
           .document('books/$bookId/pages/' + page.pageNumber.toString());
@@ -68,6 +85,18 @@ class FirestoreService {
     } catch (e) {
       print('Could not get page');
       return null;
+    }
+  }
+
+  _addPage({@required String bookId, @required Page page}) async {
+    try {
+      DocumentReference ref = _fireStore
+          .document('books/$bookId/pages/' + page.pageNumber.toString());
+      Map<String, dynamic> map = page.toMap();
+      await ref.setData(map, merge: true);
+    } catch (e) {
+      print('Could not upload page');
+      print(e);
     }
   }
 }

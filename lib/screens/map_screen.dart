@@ -261,7 +261,7 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
         whenCreated: FieldValue.serverTimestamp());
     final firestoreService =
         Provider.of<FirestoreService>(context, listen: false);
-    await firestoreService.updateBook(book: book);
+    await firestoreService.addBookWithPages(book: book);
 
     return book;
   }
