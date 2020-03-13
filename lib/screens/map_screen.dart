@@ -64,15 +64,16 @@ class _MapScreenState extends State<MapScreen> {
     showGeneralDialog(
         barrierColor: Colors.white.withOpacity(0.3),
         transitionBuilder: (context, a1, a2, widget) {
-          return Transform.scale(
-            scale: a1.value,
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
             child: Opacity(
               opacity: a1.value,
               child: widget,
             ),
           );
         },
-        transitionDuration: Duration(milliseconds: 200),
+        transitionDuration: Duration(milliseconds: 150),
         barrierDismissible: true,
         barrierLabel: '',
         context: context,
@@ -143,7 +144,10 @@ class _DayPickerDialogState extends State<DayPickerDialog> {
     super.initState();
     scrollController = FixedExtentScrollController(initialItem: selectedNumber);
     for (int i = 1; i < 21; i++) {
-      items.add(Text(i.toString()));
+      items.add(Text(
+        i.toString(),
+        style: TextStyle(fontFamily: 'OpenSansRegular', color: kDarkGrey),
+      ));
     }
   }
 
@@ -159,14 +163,18 @@ class _DayPickerDialogState extends State<DayPickerDialog> {
             Text(
               'How many days do you want to spend there?',
               style: TextStyle(
-                  fontSize: 25, fontFamily: 'CatamaranBold', height: 1.3),
+                fontSize: 25,
+                fontFamily: 'CatamaranBold',
+                height: 1.3,
+                color: kDarkGrey,
+              ),
               textAlign: TextAlign.center,
             ),
             SizedBox(
               height: 120,
               child: CupertinoPicker(
                   scrollController: scrollController,
-                  backgroundColor: kYellow,
+                  backgroundColor: kBrightYellow,
                   itemExtent: 30,
                   onSelectedItemChanged: _onSelectedItemChanged,
                   children: items),
@@ -179,7 +187,8 @@ class _DayPickerDialogState extends State<DayPickerDialog> {
                     'Cancel',
                     style: TextStyle(
                       fontSize: 20,
-                      color: kDarkBlue,
+                      fontFamily: 'OpenSansRegular',
+                      color: kGreen,
                     ),
                   ),
                   onPressed: () {
@@ -191,7 +200,8 @@ class _DayPickerDialogState extends State<DayPickerDialog> {
                     'Add',
                     style: TextStyle(
                       fontSize: 20,
-                      color: kDarkBlue,
+                      fontFamily: 'OpenSansBold',
+                      color: kGreen,
                     ),
                   ),
                   onPressed: () async {
@@ -213,7 +223,7 @@ class _DayPickerDialogState extends State<DayPickerDialog> {
           ],
         ),
       ),
-      backgroundColor: kYellow,
+      backgroundColor: kBrightYellow,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20))),
     );
