@@ -16,33 +16,73 @@ class _AddBookContentScreenState extends State<AddBookContentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return PageView.builder(
+      controller: _pageController,
+      itemBuilder: (context, position) {
+        return _buildPage(pageNumber: position);
+      },
+      itemCount: widget.book.numberOfPages,
+    );
+  }
+
+  Widget _buildPage({@required int pageNumber}) {
     return Scaffold(
       body: SafeArea(
-        child: PageView.builder(
-          controller: _pageController,
-          itemBuilder: (context, position) {
-            return _buildPage(pageNumber: position);
-          },
-          itemCount: widget.book.numberOfPages,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Header(
+                pageNumber: pageNumber,
+                saveEverything: _saveEverything,
+              ),
+              CupertinoTextField(
+                decoration: BoxDecoration(border: null),
+                style: TextStyle(fontSize: 15, fontFamily: 'OpenSansRegular'),
+                autofocus: true,
+                maxLines: 10,
+                minLines: 1,
+              ),
+              CupertinoButton(
+                  child: Text('Add pdf'), onPressed: _onAddButtonPressed)
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildPage({@required int pageNumber}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-      child: Column(
-        children: <Widget>[
-          Text(
-            'Day ${pageNumber + 1}',
-            style: TextStyle(fontSize: 40, fontFamily: 'CatamaranBold'),
-          ),
-          CupertinoTextField(
-            autofocus: true,
-          ),
-        ],
-      ),
+  _saveEverything() async {
+    //upload the page content (text and images that are stored in the state)
+  }
+
+  _onAddButtonPressed() async {
+    //get images and save them in the state
+  }
+}
+
+class Header extends StatelessWidget {
+  final int pageNumber;
+  final Function saveEverything;
+
+  Header({@required this.pageNumber, @required this.saveEverything});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        Text(
+          'Day ${pageNumber + 1}',
+          style: TextStyle(fontSize: 40, fontFamily: 'CatamaranBold'),
+        ),
+        Positioned(
+          right: 10,
+          child:
+              CupertinoButton(child: Text('Save'), onPressed: saveEverything),
+        ),
+      ],
     );
   }
 }
