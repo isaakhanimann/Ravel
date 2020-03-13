@@ -11,27 +11,26 @@ class AddBookContentScreen extends StatefulWidget {
 }
 
 class _AddBookContentScreenState extends State<AddBookContentScreen> {
-  static const double pi = 3.14159265359;
-  final pageController = PageController();
-  List<Widget> pages = [];
-
-  @override
-  void initState() {
-    super.initState();
-    for (int i = 0; i < widget.book.numberOfPages; i++) {
-      pages.add(Center(
-          child: Text(
-        i.toString(),
-        style: TextStyle(fontSize: 30),
-      )));
-    }
-  }
+  final _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
-    return PageView(
-      controller: pageController,
-      children: pages,
+    return Scaffold(
+        body: PageView.builder(
+      controller: _pageController,
+      itemBuilder: (context, position) {
+        return _buildPage(pageNumber: position);
+      },
+      itemCount: widget.book.numberOfPages,
+    ));
+  }
+
+  Widget _buildPage({@required int pageNumber}) {
+    return Container(
+      color: (pageNumber % 2 == 0) ? Colors.blue : Colors.green,
+      child: Center(
+        child: Text(pageNumber.toString()),
+      ),
     );
   }
 }
