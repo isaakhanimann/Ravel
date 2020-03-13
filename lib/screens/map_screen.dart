@@ -152,7 +152,7 @@ class _DayPickerDialogState extends State<DayPickerDialog> {
     return Dialog(
       elevation: 0,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+        padding: const EdgeInsets.fromLTRB(20, 35, 20, 8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[

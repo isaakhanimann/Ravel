@@ -22,7 +22,7 @@ class Book {
     this.bookId = map['bookId'];
     this.ownerUid = map['ownerUid'];
     this.title = map['title'];
-    this.numberOfPages = map['numberOfPages'];
+    this.numberOfPages = map['numberOfPages'] ?? 3;
     this.content = map['content'];
     this.location = map['location'];
     this.whenCreated = map['whenCreated']?.toDate();
