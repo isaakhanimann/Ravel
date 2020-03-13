@@ -20,7 +20,8 @@ class _AddBookContentScreensState extends State<AddBookContentScreens> {
     return PageView.builder(
       controller: _pageController,
       itemBuilder: (context, position) {
-        return BookPageScreen(pageNumber: position);
+        return BookPageScreen(
+            bookId: widget.book.bookId, pageNumber: position + 1);
       },
       itemCount: widget.book.numberOfPages,
     );

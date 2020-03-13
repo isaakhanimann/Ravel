@@ -95,7 +95,7 @@ class FirestoreService {
       Map<String, dynamic> map = page.toMap();
       await ref.setData(map, merge: true);
     } catch (e) {
-      print('Could not upload page');
+      print('Could not add page');
       print(e);
     }
   }

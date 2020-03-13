@@ -8,6 +8,6 @@ class GeocodingService {
       {@required double latitude, @required double longitude}) async {
     List<Placemark> placemarks =
         await geoLocator.placemarkFromCoordinates(latitude, longitude);
-    return placemarks[0]?.administrativeArea;
+    return placemarks[0]?.locality;
   }
 }
