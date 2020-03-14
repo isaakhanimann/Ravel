@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'dart:io';
 
 class StorageService {
   final StorageReference _storageReference = FirebaseStorage().ref();
@@ -29,13 +30,20 @@ class StorageService {
     }
   }
 
-  Future<String> getImageUrl({@required String fileName}) async {
+  Future<String> uploadFile(
+      {@required String bookId,
+      @required int pageNumber,
+      @required File file}) async {
     try {
-      final String downloadUrl =
-          await _storageReference.child('images/$fileName').getDownloadURL();
-      return downloadUrl;
+      var uuid = new Uuid();
+      String fileName = uuid.v1();
+      final StorageUploadTask uploadTask = _storageReference
+          .child('$bookId/$pageNumber/files/$fileName')
+          .putFile(file);
+      return await (await uploadTask.onComplete).ref.getDownloadURL();
     } catch (e) {
-      print('Could not get image url');
+      print('Could not upload file');
+      print(e);
       return null;
     }
   }

@@ -22,7 +22,6 @@ class PageScreen extends StatefulWidget {
 class _PageScreenState extends State<PageScreen> {
   Future<Page> futurePage;
   Page editedPage;
-  List<Asset> images = []; //imageSection muss nur diese List erweitern
 
   @override
   void initState() {
@@ -53,7 +52,7 @@ class _PageScreenState extends State<PageScreen> {
               children: <Widget>[
                 Header(
                   pageNumber: widget.pageNumber,
-                  saveEverything: _saveEverything,
+                  saveEverything: _saveText,
                 ),
                 Expanded(
                   child: FutureBuilder(
@@ -83,23 +82,7 @@ class _PageScreenState extends State<PageScreen> {
     );
   }
 
-  _saveEverything() async {
-    final storageService = Provider.of<StorageService>(context, listen: false);
-    List<FileInfo> f
-    for (Asset image in images) {
-      String downloadUrl = await storageService.uploadImage(
-          bookId: widget.book.bookId,
-          pageNumber: widget.pageNumber,
-          image: image);
-      imageUrls.add(downloadUrl);
-    }
-
-    editedPage.imageInfos = FileInfo(downloadUrl: im);
-    final firestoreService =
-        Provider.of<FirestoreService>(context, listen: false);
-    await firestoreService.updatePage(
-        bookId: widget.book.bookId, page: editedPage);
-  }
+  _saveText() async {}
 }
 
 class PageBody extends StatelessWidget {
@@ -159,14 +142,17 @@ class FilesSection extends StatefulWidget {
 
 class _FilesSectionState extends State<FilesSection> {
   Stream<List<FileInfo>> filesStream;
+  List<FileInfo> fileInfos;
 
   @override
   void initState() {
     super.initState();
     final firestoreService =
         Provider.of<FirestoreService>(context, listen: false);
+    final book = Provider.of<Book>(context, listen: false);
+    final pageNumber = Provider.of<int>(context, listen: false);
     filesStream = firestoreService.getStreamOfFileInfos(
-        bookId: bookId, pageNumber: pageNumber);
+        bookId: book.bookId, pageNumber: pageNumber);
   }
 
   @override
@@ -185,15 +171,15 @@ class _FilesSectionState extends State<FilesSection> {
               return CupertinoActivityIndicator();
             }
 
-            final List<FileInfo> files = snapshot.data;
+            fileInfos = snapshot.data;
 
             return Wrap(
               children: <Widget>[
-                for (MyFile file in files)
+                for (FileInfo fileInfo in fileInfos)
                   CupertinoButton(
-                    child: Text(file.filename),
+                    child: Text(fileInfo.fileName),
                     onPressed: () {
-                      //view file
+                      //todo view file
                     },
                   ),
               ],
@@ -205,13 +191,21 @@ class _FilesSectionState extends State<FilesSection> {
   }
 
   _onAddFilesPressed() async {
+    //get the files
     final filePickerService =
         Provider.of<FilePickerService>(context, listen: false);
     List<File> filesPicked = await filePickerService.getFiles();
-dddd
-    setState(() {
-      files = filesPicked;
-    });
+    //upload them to storage
+    final storageService = Provider.of<StorageService>(context, listen: false);
+    final book = Provider.of<Book>(context, listen: false);
+    final pageNumber = Provider.of<int>(context, listen: false);
+    for (File file in filesPicked) {
+      String downloadUrl = await storageService.uploadFile(
+          bookId: book.bookId, pageNumber: pageNumber, file: file);
+      fileInfos.add(FileInfo.fromFile(file: file, downloadUrl: downloadUrl));
+    }
+
+    //update the pages fileInfos
   }
 }
 
@@ -276,7 +270,24 @@ class _ImagesSectionState extends State<ImagesSection> {
   }
 
   _onAddButtonPressed() async {
-    //get images and save them in the state
+    //todo get images with multifile picker
+    List<Asset> images = [];
+
+//    //add the image infos to the ones that are already there
+//    final storageService = Provider.of<StorageService>(context, listen: false);
+//    List<FileInfo> imageInfos = herewritetheimageInfosThat are here;
+//    for (Asset image in images) {
+//      String downloadUrl = await storageService.uploadImage(
+//          bookId: widget.book.bookId,
+//          pageNumber: widget.pageNumber,
+//          image: image);
+//      imageInfos.add(FileInfo(downloadUrl: downloadUrl));
+//    }
+//    //upload the picked images without overriding the old image infos
+//    final firestoreService =
+//    Provider.of<FirestoreService>(context, listen: false);
+//    await firestoreService.addImageInfos(
+//        bookId: widget.book.bookId, pageNumber: pageNumber, imageInfos:oldImageInfos + newImageInfos);
   }
 }
 
