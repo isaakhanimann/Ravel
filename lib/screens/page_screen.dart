@@ -11,6 +11,7 @@ import 'dart:io';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ravel/services/multi_image_picker_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ravel/constants.dart';
 
 class PageScreen extends StatefulWidget {
   final Book book;
@@ -47,38 +48,38 @@ class _PageScreenState extends State<PageScreen> {
       ],
       child: Scaffold(
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Text(
-                  'Day ${widget.pageNumber}',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 40, fontFamily: 'CatamaranBold'),
-                ),
-                Expanded(
-                  child: FutureBuilder(
-                    future: futurePage,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState != ConnectionState.done) {
-                        return CupertinoActivityIndicator();
-                      }
-                      if (snapshot.hasError) {
-                        return Container(
-                          color: Colors.red,
-                          child: const Text('Something went wrong'),
-                        );
-                      }
-                      editedPage = snapshot.data;
+          bottom: false,
+          left: false,
+          right: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Text(
+                'Day ${widget.pageNumber}',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 40, fontFamily: 'CatamaranBold'),
+              ),
+              Expanded(
+                child: FutureBuilder(
+                  future: futurePage,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return CupertinoActivityIndicator();
+                    }
+                    if (snapshot.hasError) {
+                      return Container(
+                        color: Colors.red,
+                        child: const Text('Something went wrong'),
+                      );
+                    }
+                    editedPage = snapshot.data;
 
-                      return Provider<Page>.value(
-                          value: editedPage, child: PageBody());
-                    },
-                  ),
+                    return Provider<Page>.value(
+                        value: editedPage, child: PageBody());
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -91,10 +92,13 @@ class PageBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        PageText(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          child: PageText(),
+        ),
         Expanded(
           child: Container(
-            color: Colors.green,
+            color: Colors.transparent,
           ),
         ),
         FilesSection(),
@@ -176,34 +180,59 @@ class _FilesSectionState extends State<FilesSection> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        CupertinoButton(
-          child: Text('Add Files'),
-          onPressed: _onAddFilesPressed,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          child: Text(
+            'Documents',
+            style: kPageSubsectionTitle,
+          ),
         ),
-        StreamBuilder(
-          stream: fileInfosStream,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting ||
-                snapshot.connectionState == ConnectionState.none) {
-              return CupertinoActivityIndicator();
-            }
+        SizedBox(
+          height: 100,
+          width: double.infinity,
+          child: StreamBuilder(
+            stream: fileInfosStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting ||
+                  snapshot.connectionState == ConnectionState.none) {
+                return Center(child: CupertinoActivityIndicator());
+              }
 
-            fileInfos = snapshot.data;
+              fileInfos = snapshot.data;
 
-            return Wrap(
-              children: <Widget>[
-                for (FileInfo fileInfo in fileInfos)
+              return Wrap(
+                alignment: WrapAlignment.start,
+                crossAxisAlignment: WrapCrossAlignment.start,
+                direction: Axis.horizontal,
+                children: <Widget>[
+                  for (FileInfo fileInfo in fileInfos)
+                    CupertinoButton(
+                      child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 22, vertical: 12),
+                          decoration: BoxDecoration(
+                              color: kLightGrey,
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Text(fileInfo.fileName)),
+                      onPressed: () {
+                        //view file
+                        _launchURL(url: fileInfo.downloadUrl);
+                      },
+                    ),
                   CupertinoButton(
-                    child: Text(fileInfo.fileName),
-                    onPressed: () {
-                      //view file
-                      _launchURL(url: fileInfo.downloadUrl);
-                    },
+                    child: Icon(
+                      Icons.add_circle_outline,
+                      size: 35,
+                      color: kGreen,
+                    ),
+                    onPressed: _onAddFilesPressed,
                   ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         )
       ],
     );
@@ -262,37 +291,62 @@ class _ImagesSectionState extends State<ImagesSection> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        CupertinoButton(
-          child: Text('Add Image'),
-          onPressed: () {
-            _onAddImageButtonPressed(context);
-          },
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          child: Text(
+            'Images',
+            style: kPageSubsectionTitle,
+          ),
         ),
         SizedBox(
-          height: 120,
+          height: 200,
+          width: double.infinity,
           child: StreamBuilder(
               stream: imageInfoStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting ||
                     snapshot.connectionState == ConnectionState.none) {
-                  return CupertinoActivityIndicator();
+                  return Center(child: CupertinoActivityIndicator());
                 }
 
                 imageInfos = snapshot.data;
 
-                List<Widget> images = imageInfos
-                    .map((info) => CachedNetworkImage(
+                List<Widget> listOfImagesAndButton =
+                    List.from(imageInfos.map((info) => CachedNetworkImage(
                           imageUrl: info.downloadUrl,
+                          fit: BoxFit.fill,
                           placeholder: (context, url) =>
-                              CircularProgressIndicator(),
+                              CupertinoActivityIndicator(),
                           errorWidget: (context, url, error) =>
                               Icon(Icons.error),
-                        ))
-                    .toList();
+                        )));
 
-                return Wrap(
-                  children: images,
+                final button = CupertinoButton(
+                  child: Icon(
+                    Icons.add_circle_outline,
+                    size: 35,
+                    color: kGreen,
+                  ),
+                  onPressed: _onAddImageButtonPressed,
+                );
+                listOfImagesAndButton.add(button);
+
+                if (listOfImagesAndButton.length == 1) {
+                  return Wrap(
+                    alignment: WrapAlignment.start,
+                    crossAxisAlignment: WrapCrossAlignment.start,
+                    direction: Axis.horizontal,
+                    children: <Widget>[button],
+                  );
+                }
+
+                return GridView.count(
+                  mainAxisSpacing: 0,
+                  crossAxisSpacing: 0,
+                  crossAxisCount: 3,
+                  children: listOfImagesAndButton,
                 );
               }),
         ),
@@ -300,7 +354,7 @@ class _ImagesSectionState extends State<ImagesSection> {
     );
   }
 
-  _onAddImageButtonPressed(BuildContext context) async {
+  _onAddImageButtonPressed() async {
     //get the images
     final imagePickerService =
         Provider.of<MultiImagePickerService>(context, listen: false);
