@@ -7,6 +7,7 @@ import 'package:ravel/services/firestore_service.dart';
 import 'package:ravel/services/geocoding_service.dart';
 import 'package:ravel/services/storage_service.dart';
 import 'package:provider/provider.dart';
+import 'package:ravel/services/file_picker_service.dart';
 
 void main() async {
   // This app is designed only to work vertically, so we limit
@@ -33,6 +34,9 @@ class Ravel extends StatelessWidget {
         ),
         Provider<GeocodingService>(
           create: (_) => GeocodingService(),
+        ),
+        Provider<FilePickerService>(
+          create: (_) => FilePickerService(),
         ),
       ],
       child: MaterialApp(

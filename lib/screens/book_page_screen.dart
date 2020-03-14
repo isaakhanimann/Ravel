@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:ravel/services/firestore_service.dart';
 import 'package:ravel/services/storage_service.dart';
 import 'package:ravel/models/book.dart';
+import 'dart:io';
+import 'package:ravel/services/file_picker_service.dart';
 
 class BookPageScreen extends StatefulWidget {
   final Book book;
@@ -101,6 +103,7 @@ class PageBody extends StatelessWidget {
             color: Colors.green,
           ),
         ),
+        FilesSection(),
         ImagesSection(),
       ],
     );
@@ -135,6 +138,37 @@ class _PageTextState extends State<PageText> {
       maxLines: 10,
       minLines: 1,
     );
+  }
+}
+
+class FilesSection extends StatefulWidget {
+  @override
+  _FilesSectionState createState() => _FilesSectionState();
+}
+
+class _FilesSectionState extends State<FilesSection> {
+  List<File> files = [];
+
+  @override
+  Widget build(BuildContext context) {
+    print(files);
+    return Column(
+      children: <Widget>[
+        CupertinoButton(
+          child: Text('Add Files'),
+          onPressed: _onAddFilesPressed,
+        ),
+      ],
+    );
+  }
+
+  _onAddFilesPressed() async {
+    final filePickerService =
+        Provider.of<FilePickerService>(context, listen: false);
+    List<File> filesPicked = await filePickerService.getFiles();
+    setState(() {
+      files = filesPicked;
+    });
   }
 }
 
