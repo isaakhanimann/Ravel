@@ -8,7 +8,7 @@ import 'package:ravel/services/storage_service.dart';
 import 'package:ravel/models/book.dart';
 import 'package:ravel/services/file_picker_service.dart';
 import 'dart:io';
-//import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PageScreen extends StatefulWidget {
   final Book book;
@@ -179,7 +179,8 @@ class _FilesSectionState extends State<FilesSection> {
                   CupertinoButton(
                     child: Text(fileInfo.fileName),
                     onPressed: () {
-                      //todo view file
+                      //view file
+                      _launchURL(url: fileInfo.downloadUrl);
                     },
                   ),
               ],
@@ -188,6 +189,14 @@ class _FilesSectionState extends State<FilesSection> {
         )
       ],
     );
+  }
+
+  _launchURL({@required String url}) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   _onAddFilesPressed() async {
