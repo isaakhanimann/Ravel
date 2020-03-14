@@ -43,5 +43,9 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>Ravel wants to add images to your book</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Ravel wants to make photos that you can use in your book</string>
 </dict>
 </plist>
