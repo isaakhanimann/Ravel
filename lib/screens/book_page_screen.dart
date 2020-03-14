@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:ravel/models/page.dart';
 import 'package:provider/provider.dart';
@@ -79,14 +78,11 @@ class _BookPageScreenState extends State<BookPageScreen> {
         bookId: widget.book.bookId, page: editedPage);
 
     final storageService = Provider.of<StorageService>(context, listen: false);
-    for (Asset image in images) {
-      ByteData byteData = await image.getByteData();
-      List<int> imageData = byteData.buffer.asUint8List();
+    for (var image in images) {
       await storageService.uploadImage(
           bookId: widget.book.bookId,
           pageNumber: widget.pageNumber,
-          fileName: image.name,
-          image: imageData);
+          image: image);
     }
   }
 }
