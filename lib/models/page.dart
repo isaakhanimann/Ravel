@@ -1,25 +1,25 @@
 class Page {
   String text;
   int pageNumber;
-  List<String> imageNames;
+  List<String> imageUrls;
 
   Page({
     this.text,
     this.pageNumber,
-    this.imageNames,
+    this.imageUrls,
   });
 
   Page.fromMap({Map<String, dynamic> map}) {
     this.text = map['text'];
     this.pageNumber = map['pageNumber'];
-    this.imageNames = _convertFirebaseList(firebaseList: map['imageNames']);
+    this.imageUrls = _convertFirebaseList(firebaseList: map['imageUrls']);
   }
 
   Map<String, dynamic> toMap() {
     return {
       'text': text,
       'pageNumber': pageNumber,
-      'imageNames': imageNames,
+      'imageUrls': imageUrls,
     };
   }
 
@@ -27,7 +27,7 @@ class Page {
   String toString() {
     String toPrint = '\n{ text: $text, ';
     toPrint += 'pageNumber: $pageNumber, ';
-    toPrint += 'imageNames: $imageNames }\n';
+    toPrint += 'imageUrls: $imageUrls }\n';
     return toPrint;
   }
 

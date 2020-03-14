@@ -19,7 +19,7 @@ class BookPageScreen extends StatefulWidget {
 class _BookPageScreenState extends State<BookPageScreen> {
   Future<Page> futurePage;
   Page editedPage;
-  List<Asset> images = [];
+  List<Asset> images = []; //imageSection muss nur diese List erweitern
 
   @override
   void initState() {
@@ -71,19 +71,21 @@ class _BookPageScreenState extends State<BookPageScreen> {
   }
 
   _saveEverything() async {
-    //upload the page content (text and images that are stored in the state)
+    final storageService = Provider.of<StorageService>(context, listen: false);
+    List<String> imageUrls = [];
+    for (var image in images) {
+      String downloadUrl = await storageService.uploadImage(
+          bookId: widget.book.bookId,
+          pageNumber: widget.pageNumber,
+          image: image);
+      imageUrls.add(downloadUrl);
+    }
+
+    editedPage.imageUrls = imageUrls;
     final firestoreService =
         Provider.of<FirestoreService>(context, listen: false);
     await firestoreService.updatePage(
         bookId: widget.book.bookId, page: editedPage);
-
-    final storageService = Provider.of<StorageService>(context, listen: false);
-    for (var image in images) {
-      await storageService.uploadImage(
-          bookId: widget.book.bookId,
-          pageNumber: widget.pageNumber,
-          image: image);
-    }
   }
 }
 

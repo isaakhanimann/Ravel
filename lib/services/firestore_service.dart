@@ -15,7 +15,7 @@ class FirestoreService {
       book.bookId = ref.documentID;
       await ref.setData(book.toMap(), merge: true);
       for (int i = 1; i <= book.numberOfPages; i++) {
-        Page page = Page(text: '', pageNumber: i, imageNames: []);
+        Page page = Page(text: '', pageNumber: i, imageUrls: []);
         _addPage(bookId: book.bookId, page: page);
       }
     } catch (e) {
