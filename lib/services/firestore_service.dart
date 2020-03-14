@@ -66,11 +66,12 @@ class FirestoreService {
 
   updatePage({@required String bookId, @required Page page}) async {
     try {
-      DocumentReference ref = _fireStore
-          .document('books/$bookId/pages/' + page.pageNumber.toString());
+      DocumentReference ref =
+          _fireStore.document('books/$bookId/pages/${page.pageNumber}');
       await ref.setData(page.toMap(), merge: true);
     } catch (e) {
       print('Could not upload page');
+      print(e);
     }
   }
 
@@ -84,6 +85,7 @@ class FirestoreService {
       return page;
     } catch (e) {
       print('Could not get page');
+      print(e);
       return null;
     }
   }
@@ -133,6 +135,36 @@ class FirestoreService {
           'Could not get stream of imageInfo with bookId = $bookId and pageNumber = $pageNumber');
       print(e);
       return null;
+    }
+  }
+
+  updateFileInfos(
+      {@required String bookId,
+      @required int pageNumber,
+      @required List<FileInfo> fileInfos}) async {
+    try {
+      DocumentReference ref =
+          _fireStore.document('books/$bookId/pages/$pageNumber');
+      await ref.updateData(
+          {'fileInfos': fileInfos?.map((FileInfo f) => f.toMap())?.toList()});
+    } catch (e) {
+      print('Could not update fileInfos');
+      print(e);
+    }
+  }
+
+  updateImageInfos(
+      {@required String bookId,
+      @required int pageNumber,
+      @required List<FileInfo> imageInfos}) async {
+    try {
+      DocumentReference ref =
+          _fireStore.document('books/$bookId/pages/$pageNumber');
+      await ref.updateData(
+          {'imageInfos': imageInfos?.map((FileInfo i) => i.toMap())?.toList()});
+    } catch (e) {
+      print('Could not update imageInfos');
+      print(e);
     }
   }
 

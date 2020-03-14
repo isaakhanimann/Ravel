@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
+//import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:ravel/models/page.dart';
 import 'package:provider/provider.dart';
 import 'package:ravel/services/firestore_service.dart';
@@ -8,7 +8,7 @@ import 'package:ravel/services/storage_service.dart';
 import 'package:ravel/models/book.dart';
 import 'package:ravel/services/file_picker_service.dart';
 import 'dart:io';
-import 'package:url_launcher/url_launcher.dart';
+//import 'package:url_launcher/url_launcher.dart';
 
 class PageScreen extends StatefulWidget {
   final Book book;
@@ -204,8 +204,11 @@ class _FilesSectionState extends State<FilesSection> {
           bookId: book.bookId, pageNumber: pageNumber, file: file);
       fileInfos.add(FileInfo.fromFile(file: file, downloadUrl: downloadUrl));
     }
-
     //update the pages fileInfos
+    final firestoreService =
+        Provider.of<FirestoreService>(context, listen: false);
+    firestoreService.updateFileInfos(
+        bookId: book.bookId, pageNumber: pageNumber, fileInfos: fileInfos);
   }
 }
 
@@ -271,7 +274,7 @@ class _ImagesSectionState extends State<ImagesSection> {
 
   _onAddButtonPressed() async {
     //todo get images with multifile picker
-    List<Asset> images = [];
+    //List<Asset> images = [];
 
 //    //add the image infos to the ones that are already there
 //    final storageService = Provider.of<StorageService>(context, listen: false);
