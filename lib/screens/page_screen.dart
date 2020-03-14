@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-//import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:ravel/models/page.dart';
 import 'package:provider/provider.dart';
 import 'package:ravel/services/firestore_service.dart';
@@ -98,7 +98,7 @@ class PageBody extends StatelessWidget {
           ),
         ),
         FilesSection(),
-//        ImagesSection(),
+        ImagesSection(),
       ],
     );
   }
@@ -227,6 +227,21 @@ class ImagesSection extends StatefulWidget {
 }
 
 class _ImagesSectionState extends State<ImagesSection> {
+
+  Stream<List<FileInfo>> imageInfoStream;
+  List<FileInfo> imageInfos;
+
+  @override
+  void initState() {
+    super.initState();
+    final firestoreService =
+    Provider.of<FirestoreService>(context, listen: false);
+    final book = Provider.of<Book>(context, listen: false);
+    final pageNumber = Provider.of<int>(context, listen: false);
+    imageInfoStream = firestoreService.getStreamOfImageInfos(
+        bookId: book.bookId, pageNumber: pageNumber);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -237,44 +252,57 @@ class _ImagesSectionState extends State<ImagesSection> {
         ),
         SizedBox(
           height: 120,
-          child: Wrap(
-            children: <Widget>[
-              Container(
-                color: Colors.blue,
-                height: 60,
-                width: 60,
-              ),
-              Container(
-                color: Colors.yellow,
-                height: 60,
-                width: 60,
-              ),
-              Container(
-                color: Colors.green,
-                height: 60,
-                width: 60,
-              ),
-              Container(
-                color: Colors.brown,
-                height: 60,
-                width: 60,
-              ),
-              Container(
-                color: Colors.red,
-                height: 60,
-                width: 60,
-              ),
-              Container(
-                color: Colors.pink,
-                height: 60,
-                width: 60,
-              ),
-              Container(
-                color: Colors.purple,
-                height: 60,
-                width: 60,
-              ),
-            ],
+          child: StreamBuilder(
+            stream: imageInfoStream,
+            builder: (context,snapshot) {
+
+              if (snapshot.connectionState == ConnectionState.waiting ||
+                  snapshot.connectionState == ConnectionState.none) {
+                return CupertinoActivityIndicator();
+              }
+
+              imageInfos = snapshot.data;
+
+              return Wrap(
+                children: <Widget>[
+                  Container(
+                    color: Colors.blue,
+                    height: 60,
+                    width: 60,
+                  ),
+                  Container(
+                    color: Colors.yellow,
+                    height: 60,
+                    width: 60,
+                  ),
+                  Container(
+                    color: Colors.green,
+                    height: 60,
+                    width: 60,
+                  ),
+                  Container(
+                    color: Colors.brown,
+                    height: 60,
+                    width: 60,
+                  ),
+                  Container(
+                    color: Colors.red,
+                    height: 60,
+                    width: 60,
+                  ),
+                  Container(
+                    color: Colors.pink,
+                    height: 60,
+                    width: 60,
+                  ),
+                  Container(
+                    color: Colors.purple,
+                    height: 60,
+                    width: 60,
+                  ),
+                ],
+              );
+            }
           ),
         ),
       ],
@@ -282,8 +310,36 @@ class _ImagesSectionState extends State<ImagesSection> {
   }
 
   _onAddButtonPressed() async {
-    //todo get images with multifile picker
-    //List<Asset> images = [];
+    //get the images
+    final imagePickerService =
+    Provider.of<MultiImagePickerService>(context, listen: false);
+    List<Asset> imagesPicked = await imagePickerService.getImages();
+
+    //upload them to storage
+    final storageService = Provider.of<StorageService>(context, listen: false);
+    final book = Provider.of<Book>(context, listen: false);
+    final pageNumber = Provider.of<int>(context, listen: false);
+    for (Asset image in imagesPicked) {
+      String downloadUrl = await storageService.uploadImage(
+          bookId: book.bookId, pageNumber: pageNumber, image: image);
+      imageInfos.add(FileInfo(downloadUrl: downloadUrl));
+    }
+    //update the pages imageInfos
+    final firestoreService =
+    Provider.of<FirestoreService>(context, listen: false);
+    firestoreService.updateImageInfos(
+        bookId: book.bookId, pageNumber: pageNumber, imageInfos: imageInfos);
+  }
+
+
+
+
+
+
+
+
+
+
 
 //    //add the image infos to the ones that are already there
 //    final storageService = Provider.of<StorageService>(context, listen: false);
