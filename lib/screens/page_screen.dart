@@ -6,19 +6,18 @@ import 'package:provider/provider.dart';
 import 'package:ravel/services/firestore_service.dart';
 import 'package:ravel/services/storage_service.dart';
 import 'package:ravel/models/book.dart';
-import 'dart:io';
 import 'package:ravel/services/file_picker_service.dart';
 
-class BookPageScreen extends StatefulWidget {
+class PageScreen extends StatefulWidget {
   final Book book;
   final int pageNumber;
 
-  BookPageScreen({@required this.book, @required this.pageNumber});
+  PageScreen({@required this.book, @required this.pageNumber});
   @override
-  _BookPageScreenState createState() => _BookPageScreenState();
+  _PageScreenState createState() => _PageScreenState();
 }
 
-class _BookPageScreenState extends State<BookPageScreen> {
+class _PageScreenState extends State<PageScreen> {
   Future<Page> futurePage;
   Page editedPage;
   List<Asset> images = []; //imageSection muss nur diese List erweitern
@@ -147,17 +146,21 @@ class FilesSection extends StatefulWidget {
 }
 
 class _FilesSectionState extends State<FilesSection> {
-  List<File> files = [];
+  List<MyFile> files = [];
 
   @override
   Widget build(BuildContext context) {
-    print(files);
     return Column(
       children: <Widget>[
         CupertinoButton(
           child: Text('Add Files'),
           onPressed: _onAddFilesPressed,
         ),
+        Wrap(
+          children: <Widget>[
+            for (MyFile file in files) Text(file.filename),
+          ],
+        )
       ],
     );
   }
@@ -165,7 +168,8 @@ class _FilesSectionState extends State<FilesSection> {
   _onAddFilesPressed() async {
     final filePickerService =
         Provider.of<FilePickerService>(context, listen: false);
-    List<File> filesPicked = await filePickerService.getFiles();
+    List<MyFile> filesPicked = await filePickerService.getFiles();
+
     setState(() {
       files = filesPicked;
     });

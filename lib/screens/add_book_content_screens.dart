@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ravel/models/book.dart';
-import 'package:ravel/screens/book_page_screen.dart';
+import 'package:ravel/screens/page_screen.dart';
 
 class AddBookContentScreens extends StatefulWidget {
   final Book book;
@@ -20,7 +20,7 @@ class _AddBookContentScreensState extends State<AddBookContentScreens> {
     return PageView.builder(
       controller: _pageController,
       itemBuilder: (context, position) {
-        return BookPageScreen(book: widget.book, pageNumber: position + 1);
+        return PageScreen(book: widget.book, pageNumber: position + 1);
       },
       itemCount: widget.book.numberOfPages,
     );
