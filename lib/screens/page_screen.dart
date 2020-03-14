@@ -98,7 +98,7 @@ class PageBody extends StatelessWidget {
           ),
         ),
         FilesSection(),
-        ImagesSection(),
+//        ImagesSection(),
       ],
     );
   }
@@ -141,7 +141,7 @@ class FilesSection extends StatefulWidget {
 }
 
 class _FilesSectionState extends State<FilesSection> {
-  Stream<List<FileInfo>> filesStream;
+  Stream<Page> pageStream;
   List<FileInfo> fileInfos;
 
   @override
@@ -151,7 +151,7 @@ class _FilesSectionState extends State<FilesSection> {
         Provider.of<FirestoreService>(context, listen: false);
     final book = Provider.of<Book>(context, listen: false);
     final pageNumber = Provider.of<int>(context, listen: false);
-    filesStream = firestoreService.getStreamOfFileInfos(
+    pageStream = firestoreService.getStreamOfPage(
         bookId: book.bookId, pageNumber: pageNumber);
   }
 
@@ -164,26 +164,36 @@ class _FilesSectionState extends State<FilesSection> {
           onPressed: _onAddFilesPressed,
         ),
         StreamBuilder(
-          stream: filesStream,
+          stream: pageStream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting ||
                 snapshot.connectionState == ConnectionState.none) {
               return CupertinoActivityIndicator();
             }
 
-            fileInfos = snapshot.data;
+            if (snapshot.hasError) {
+              return Text('the error is = ${snapshot.error.toString()}');
+            }
 
-            return Wrap(
-              children: <Widget>[
-                for (FileInfo fileInfo in fileInfos)
-                  CupertinoButton(
-                    child: Text(fileInfo.fileName),
-                    onPressed: () {
-                      //todo view file
-                    },
-                  ),
-              ],
+            Page page = snapshot.data;
+
+            return Container(
+              color: Colors.purple,
+              height: 30,
+              width: 30,
             );
+
+//            return Wrap(
+//              children: <Widget>[
+//                for (FileInfo fileInfo in fileInfos)
+//                  CupertinoButton(
+//                    child: Text(fileInfo.fileName),
+//                    onPressed: () {
+//                      //todo view file
+//                    },
+//                  ),
+//              ],
+//            );
           },
         )
       ],

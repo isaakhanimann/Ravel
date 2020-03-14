@@ -15,11 +15,15 @@ class Page {
 
   Page.fromMap({Map<String, dynamic> map}) {
     this.text = map['text'];
+    print('text = $text');
     this.pageNumber = map['pageNumber'];
+    print('pageNumber = $pageNumber');
     this.fileInfos =
         _convertFirebaseListOfFileInfos(firebaseList: map['fileInfos']);
+    print('fileInfos = $fileInfos');
     this.imageInfos =
         _convertFirebaseListOfFileInfos(firebaseList: map['imageInfos']);
+    print('imageInfos = $imageInfos');
   }
 
   Map<String, dynamic> toMap() {

@@ -106,37 +106,42 @@ class FirestoreService {
     }
   }
 
-  Stream<List<FileInfo>> getStreamOfFileInfos(
-      {@required String bookId, @required int pageNumber}) {
-    try {
-      Stream<Page> pageStream =
-          getStreamOfPage(bookId: bookId, pageNumber: pageNumber);
-      Stream<List<FileInfo>> filesStream =
-          pageStream.map((page) => page.fileInfos).distinct();
-      return filesStream;
-    } catch (e) {
-      print(
-          'Could not get stream of fileinfos with bookId = $bookId and pageNumber = $pageNumber');
-      print(e);
-      return null;
-    }
-  }
-
-  Stream<List<FileInfo>> getStreamOfImageInfos(
-      {@required String bookId, @required int pageNumber}) {
-    try {
-      Stream<Page> pageStream =
-          getStreamOfPage(bookId: bookId, pageNumber: pageNumber);
-      Stream<List<FileInfo>> imagesStream =
-          pageStream.map((page) => page.imageInfos).distinct();
-      return imagesStream;
-    } catch (e) {
-      print(
-          'Could not get stream of imageInfo with bookId = $bookId and pageNumber = $pageNumber');
-      print(e);
-      return null;
-    }
-  }
+//  Stream<List<FileInfo>> getStreamOfFileInfos(
+//      {@required String bookId, @required int pageNumber}) {
+//    try {
+//      Stream<Page> pageStream =
+//          getStreamOfPage(bookId: bookId, pageNumber: pageNumber);
+//      print('pagestream was gotten');
+//      Stream<List<FileInfo>> filesStream = pageStream.map((page) {
+//        List<FileInfo> fileInfos = page.fileInfos;
+//        print('*********************fileInfos = $fileInfos');
+//        return fileInfos;
+//      }).distinct();
+//      print('fileStream was gotten');
+//      return filesStream;
+//    } catch (e) {
+//      print(
+//          'Could not get stream of fileinfos with bookId = $bookId and pageNumber = $pageNumber');
+//      print(e);
+//      return null;
+//    }
+//  }
+//
+//  Stream<List<FileInfo>> getStreamOfImageInfos(
+//      {@required String bookId, @required int pageNumber}) {
+//    try {
+//      Stream<Page> pageStream =
+//          getStreamOfPage(bookId: bookId, pageNumber: pageNumber);
+//      Stream<List<FileInfo>> imagesStream =
+//          pageStream.map((page) => page.imageInfos).distinct();
+//      return imagesStream;
+//    } catch (e) {
+//      print(
+//          'Could not get stream of imageInfo with bookId = $bookId and pageNumber = $pageNumber');
+//      print(e);
+//      return null;
+//    }
+//  }
 
   updateFileInfos(
       {@required String bookId,
