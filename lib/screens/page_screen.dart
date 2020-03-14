@@ -7,6 +7,8 @@ import 'package:ravel/services/firestore_service.dart';
 import 'package:ravel/services/storage_service.dart';
 import 'package:ravel/models/book.dart';
 import 'package:ravel/services/file_picker_service.dart';
+import 'dart:io';
+import 'package:url_launcher/url_launcher.dart';
 
 class PageScreen extends StatefulWidget {
   final Book book;
@@ -33,38 +35,48 @@ class _PageScreenState extends State<PageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Header(
-                pageNumber: widget.pageNumber,
-                saveEverything: _saveEverything,
-              ),
-              Expanded(
-                child: FutureBuilder(
-                  future: futurePage,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState != ConnectionState.done) {
-                      return CupertinoActivityIndicator();
-                    }
-                    if (snapshot.hasError) {
-                      return Container(
-                        color: Colors.red,
-                        child: const Text('Something went wrong'),
-                      );
-                    }
-                    editedPage = snapshot.data;
-
-                    return Provider<Page>.value(
-                        value: editedPage, child: PageBody());
-                  },
+    return MultiProvider(
+      providers: [
+        Provider<Book>.value(
+          value: widget.book,
+        ),
+        Provider<int>.value(
+          value: widget.pageNumber,
+        ),
+      ],
+      child: Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Header(
+                  pageNumber: widget.pageNumber,
+                  saveEverything: _saveEverything,
                 ),
-              ),
-            ],
+                Expanded(
+                  child: FutureBuilder(
+                    future: futurePage,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState != ConnectionState.done) {
+                        return CupertinoActivityIndicator();
+                      }
+                      if (snapshot.hasError) {
+                        return Container(
+                          color: Colors.red,
+                          child: const Text('Something went wrong'),
+                        );
+                      }
+                      editedPage = snapshot.data;
+
+                      return Provider<Page>.value(
+                          value: editedPage, child: PageBody());
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -73,8 +85,8 @@ class _PageScreenState extends State<PageScreen> {
 
   _saveEverything() async {
     final storageService = Provider.of<StorageService>(context, listen: false);
-    List<String> imageUrls = [];
-    for (var image in images) {
+    List<FileInfo> f
+    for (Asset image in images) {
       String downloadUrl = await storageService.uploadImage(
           bookId: widget.book.bookId,
           pageNumber: widget.pageNumber,
@@ -82,7 +94,7 @@ class _PageScreenState extends State<PageScreen> {
       imageUrls.add(downloadUrl);
     }
 
-    editedPage.imageUrls = imageUrls;
+    editedPage.imageInfos = FileInfo(downloadUrl: im);
     final firestoreService =
         Provider.of<FirestoreService>(context, listen: false);
     await firestoreService.updatePage(
@@ -146,7 +158,16 @@ class FilesSection extends StatefulWidget {
 }
 
 class _FilesSectionState extends State<FilesSection> {
-  List<MyFile> files = [];
+  Stream<List<FileInfo>> filesStream;
+
+  @override
+  void initState() {
+    super.initState();
+    final firestoreService =
+        Provider.of<FirestoreService>(context, listen: false);
+    filesStream = firestoreService.getStreamOfFileInfos(
+        bookId: bookId, pageNumber: pageNumber);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,10 +177,28 @@ class _FilesSectionState extends State<FilesSection> {
           child: Text('Add Files'),
           onPressed: _onAddFilesPressed,
         ),
-        Wrap(
-          children: <Widget>[
-            for (MyFile file in files) Text(file.filename),
-          ],
+        StreamBuilder(
+          stream: filesStream,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.none) {
+              return CupertinoActivityIndicator();
+            }
+
+            final List<FileInfo> files = snapshot.data;
+
+            return Wrap(
+              children: <Widget>[
+                for (MyFile file in files)
+                  CupertinoButton(
+                    child: Text(file.filename),
+                    onPressed: () {
+                      //view file
+                    },
+                  ),
+              ],
+            );
+          },
         )
       ],
     );
@@ -168,8 +207,8 @@ class _FilesSectionState extends State<FilesSection> {
   _onAddFilesPressed() async {
     final filePickerService =
         Provider.of<FilePickerService>(context, listen: false);
-    List<MyFile> filesPicked = await filePickerService.getFiles();
-
+    List<File> filesPicked = await filePickerService.getFiles();
+dddd
     setState(() {
       files = filesPicked;
     });

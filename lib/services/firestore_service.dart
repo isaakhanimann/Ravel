@@ -15,7 +15,7 @@ class FirestoreService {
       book.bookId = ref.documentID;
       await ref.setData(book.toMap(), merge: true);
       for (int i = 1; i <= book.numberOfPages; i++) {
-        Page page = Page(text: '', pageNumber: i, imageUrls: []);
+        Page page = Page(text: '', pageNumber: i, imageInfos: []);
         _addPage(bookId: book.bookId, page: page);
       }
     } catch (e) {
@@ -84,6 +84,54 @@ class FirestoreService {
       return page;
     } catch (e) {
       print('Could not get page');
+      return null;
+    }
+  }
+
+  Stream<Page> getStreamOfPage(
+      {@required String bookId, @required int pageNumber}) {
+    try {
+      Stream<Page> pageStream = _fireStore
+          .document('books/$bookId/$pageNumber')
+          .snapshots()
+          .map((docSnapshot) => Page.fromMap(map: docSnapshot.data));
+      return pageStream;
+    } catch (e) {
+      print(
+          'Could not get stream of page with bookId = $bookId and pageNumber = $pageNumber');
+      print(e);
+      return null;
+    }
+  }
+
+  Stream<List<FileInfo>> getStreamOfFileInfos(
+      {@required String bookId, @required int pageNumber}) {
+    try {
+      Stream<Page> pageStream =
+          getStreamOfPage(bookId: bookId, pageNumber: pageNumber);
+      Stream<List<FileInfo>> filesStream =
+          pageStream.map((page) => page.fileInfos).distinct();
+      return filesStream;
+    } catch (e) {
+      print(
+          'Could not get stream of fileinfos with bookId = $bookId and pageNumber = $pageNumber');
+      print(e);
+      return null;
+    }
+  }
+
+  Stream<List<FileInfo>> getStreamOfImageInfos(
+      {@required String bookId, @required int pageNumber}) {
+    try {
+      Stream<Page> pageStream =
+          getStreamOfPage(bookId: bookId, pageNumber: pageNumber);
+      Stream<List<FileInfo>> imagesStream =
+          pageStream.map((page) => page.imageInfos).distinct();
+      return imagesStream;
+    } catch (e) {
+      print(
+          'Could not get stream of imageInfo with bookId = $bookId and pageNumber = $pageNumber');
+      print(e);
       return null;
     }
   }
