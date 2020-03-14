@@ -52,9 +52,10 @@ class _PageScreenState extends State<PageScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Header(
-                  pageNumber: widget.pageNumber,
-                  saveEverything: _saveText,
+                Text(
+                  'Day ${widget.pageNumber}',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 40, fontFamily: 'CatamaranBold'),
                 ),
                 Expanded(
                   child: FutureBuilder(
@@ -83,17 +84,14 @@ class _PageScreenState extends State<PageScreen> {
       ),
     );
   }
-
-  _saveText() async {}
 }
 
 class PageBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Page page = Provider.of<Page>(context);
     return Column(
       children: <Widget>[
-        PageText(initialText: page.text),
+        PageText(),
         Expanded(
           child: Container(
             color: Colors.green,
@@ -107,10 +105,6 @@ class PageBody extends StatelessWidget {
 }
 
 class PageText extends StatefulWidget {
-  final String initialText;
-
-  PageText({@required this.initialText});
-
   @override
   _PageTextState createState() => _PageTextState();
 }
@@ -121,19 +115,41 @@ class _PageTextState extends State<PageText> {
   @override
   void initState() {
     super.initState();
-    _textEditingController = TextEditingController(text: widget.initialText);
+    Page page = Provider.of<Page>(context, listen: false);
+    _textEditingController = TextEditingController(text: page.text);
   }
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoTextField(
-      controller: _textEditingController,
-      decoration: BoxDecoration(border: null),
-      style: TextStyle(fontSize: 15, fontFamily: 'OpenSansRegular'),
-      autofocus: true,
-      maxLines: 10,
-      minLines: 1,
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.end,
+      children: <Widget>[
+        CupertinoTextField(
+          controller: _textEditingController,
+          decoration: BoxDecoration(border: null),
+          style: TextStyle(fontSize: 15, fontFamily: 'OpenSansRegular'),
+          autofocus: true,
+          maxLines: 10,
+          minLines: 1,
+        ),
+        CupertinoButton(
+          padding: EdgeInsets.all(0),
+          child: Text('Save'),
+          onPressed: _uploadText,
+        )
+      ],
     );
+  }
+
+  _uploadText() async {
+    final firestoreService =
+        Provider.of<FirestoreService>(context, listen: false);
+    final book = Provider.of<Book>(context, listen: false);
+    final pageNumber = Provider.of<int>(context, listen: false);
+    await firestoreService.updatePageText(
+        bookId: book.bookId,
+        pageNumber: pageNumber,
+        text: _textEditingController.text);
   }
 }
 
@@ -304,30 +320,5 @@ class _ImagesSectionState extends State<ImagesSection> {
         Provider.of<FirestoreService>(context, listen: false);
     firestoreService.updateImageInfos(
         bookId: book.bookId, pageNumber: pageNumber, imageInfos: imageInfos);
-  }
-}
-
-class Header extends StatelessWidget {
-  final int pageNumber;
-  final Function saveEverything;
-
-  Header({@required this.pageNumber, @required this.saveEverything});
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: <Widget>[
-        Text(
-          'Day $pageNumber',
-          style: TextStyle(fontSize: 40, fontFamily: 'CatamaranBold'),
-        ),
-        Positioned(
-          right: 10,
-          child:
-              CupertinoButton(child: Text('Save'), onPressed: saveEverything),
-        ),
-      ],
-    );
   }
 }

@@ -170,6 +170,20 @@ class FirestoreService {
     }
   }
 
+  updatePageText(
+      {@required String bookId,
+      @required int pageNumber,
+      @required String text}) async {
+    try {
+      DocumentReference ref =
+          _fireStore.document('books/$bookId/pages/$pageNumber');
+      await ref.updateData({'text': text});
+    } catch (e) {
+      print('Could not update page text');
+      print(e);
+    }
+  }
+
   _addPage({@required String bookId, @required Page page}) async {
     try {
       DocumentReference ref = _fireStore
