@@ -141,7 +141,7 @@ class FilesSection extends StatefulWidget {
 }
 
 class _FilesSectionState extends State<FilesSection> {
-  Stream<Page> pageStream;
+  Stream<List<FileInfo>> fileInfosStream;
   List<FileInfo> fileInfos;
 
   @override
@@ -151,7 +151,7 @@ class _FilesSectionState extends State<FilesSection> {
         Provider.of<FirestoreService>(context, listen: false);
     final book = Provider.of<Book>(context, listen: false);
     final pageNumber = Provider.of<int>(context, listen: false);
-    pageStream = firestoreService.getStreamOfPage(
+    fileInfosStream = firestoreService.getStreamOfFileInfos(
         bookId: book.bookId, pageNumber: pageNumber);
   }
 
@@ -164,36 +164,26 @@ class _FilesSectionState extends State<FilesSection> {
           onPressed: _onAddFilesPressed,
         ),
         StreamBuilder(
-          stream: pageStream,
+          stream: fileInfosStream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting ||
                 snapshot.connectionState == ConnectionState.none) {
               return CupertinoActivityIndicator();
             }
 
-            if (snapshot.hasError) {
-              return Text('the error is = ${snapshot.error.toString()}');
-            }
+            fileInfos = snapshot.data;
 
-            Page page = snapshot.data;
-
-            return Container(
-              color: Colors.purple,
-              height: 30,
-              width: 30,
+            return Wrap(
+              children: <Widget>[
+                for (FileInfo fileInfo in fileInfos)
+                  CupertinoButton(
+                    child: Text(fileInfo.fileName),
+                    onPressed: () {
+                      //todo view file
+                    },
+                  ),
+              ],
             );
-
-//            return Wrap(
-//              children: <Widget>[
-//                for (FileInfo fileInfo in fileInfos)
-//                  CupertinoButton(
-//                    child: Text(fileInfo.fileName),
-//                    onPressed: () {
-//                      //todo view file
-//                    },
-//                  ),
-//              ],
-//            );
           },
         )
       ],
