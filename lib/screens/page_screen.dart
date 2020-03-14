@@ -9,6 +9,8 @@ import 'package:ravel/models/book.dart';
 import 'package:ravel/services/file_picker_service.dart';
 import 'dart:io';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:ravel/services/multi_image_picker_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PageScreen extends StatefulWidget {
   final Book book;
@@ -227,7 +229,6 @@ class ImagesSection extends StatefulWidget {
 }
 
 class _ImagesSectionState extends State<ImagesSection> {
-
   Stream<List<FileInfo>> imageInfoStream;
   List<FileInfo> imageInfos;
 
@@ -235,7 +236,7 @@ class _ImagesSectionState extends State<ImagesSection> {
   void initState() {
     super.initState();
     final firestoreService =
-    Provider.of<FirestoreService>(context, listen: false);
+        Provider.of<FirestoreService>(context, listen: false);
     final book = Provider.of<Book>(context, listen: false);
     final pageNumber = Provider.of<int>(context, listen: false);
     imageInfoStream = firestoreService.getStreamOfImageInfos(
@@ -248,71 +249,45 @@ class _ImagesSectionState extends State<ImagesSection> {
       children: <Widget>[
         CupertinoButton(
           child: Text('Add Image'),
-          onPressed: _onAddButtonPressed,
+          onPressed: () {
+            _onAddImageButtonPressed(context);
+          },
         ),
         SizedBox(
           height: 120,
           child: StreamBuilder(
-            stream: imageInfoStream,
-            builder: (context,snapshot) {
+              stream: imageInfoStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting ||
+                    snapshot.connectionState == ConnectionState.none) {
+                  return CupertinoActivityIndicator();
+                }
 
-              if (snapshot.connectionState == ConnectionState.waiting ||
-                  snapshot.connectionState == ConnectionState.none) {
-                return CupertinoActivityIndicator();
-              }
+                imageInfos = snapshot.data;
 
-              imageInfos = snapshot.data;
+                List<Widget> images = imageInfos
+                    .map((info) => CachedNetworkImage(
+                          imageUrl: info.downloadUrl,
+                          placeholder: (context, url) =>
+                              CircularProgressIndicator(),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        ))
+                    .toList();
 
-              return Wrap(
-                children: <Widget>[
-                  Container(
-                    color: Colors.blue,
-                    height: 60,
-                    width: 60,
-                  ),
-                  Container(
-                    color: Colors.yellow,
-                    height: 60,
-                    width: 60,
-                  ),
-                  Container(
-                    color: Colors.green,
-                    height: 60,
-                    width: 60,
-                  ),
-                  Container(
-                    color: Colors.brown,
-                    height: 60,
-                    width: 60,
-                  ),
-                  Container(
-                    color: Colors.red,
-                    height: 60,
-                    width: 60,
-                  ),
-                  Container(
-                    color: Colors.pink,
-                    height: 60,
-                    width: 60,
-                  ),
-                  Container(
-                    color: Colors.purple,
-                    height: 60,
-                    width: 60,
-                  ),
-                ],
-              );
-            }
-          ),
+                return Wrap(
+                  children: images,
+                );
+              }),
         ),
       ],
     );
   }
 
-  _onAddButtonPressed() async {
+  _onAddImageButtonPressed(BuildContext context) async {
     //get the images
     final imagePickerService =
-    Provider.of<MultiImagePickerService>(context, listen: false);
+        Provider.of<MultiImagePickerService>(context, listen: false);
     List<Asset> imagesPicked = await imagePickerService.getImages();
 
     //upload them to storage
@@ -326,36 +301,9 @@ class _ImagesSectionState extends State<ImagesSection> {
     }
     //update the pages imageInfos
     final firestoreService =
-    Provider.of<FirestoreService>(context, listen: false);
+        Provider.of<FirestoreService>(context, listen: false);
     firestoreService.updateImageInfos(
         bookId: book.bookId, pageNumber: pageNumber, imageInfos: imageInfos);
-  }
-
-
-
-
-
-
-
-
-
-
-
-//    //add the image infos to the ones that are already there
-//    final storageService = Provider.of<StorageService>(context, listen: false);
-//    List<FileInfo> imageInfos = herewritetheimageInfosThat are here;
-//    for (Asset image in images) {
-//      String downloadUrl = await storageService.uploadImage(
-//          bookId: widget.book.bookId,
-//          pageNumber: widget.pageNumber,
-//          image: image);
-//      imageInfos.add(FileInfo(downloadUrl: downloadUrl));
-//    }
-//    //upload the picked images without overriding the old image infos
-//    final firestoreService =
-//    Provider.of<FirestoreService>(context, listen: false);
-//    await firestoreService.addImageInfos(
-//        bookId: widget.book.bookId, pageNumber: pageNumber, imageInfos:oldImageInfos + newImageInfos);
   }
 }
 

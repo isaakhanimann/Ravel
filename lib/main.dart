@@ -5,6 +5,7 @@ import 'package:ravel/screens/navigation_screen.dart';
 import 'package:ravel/services/auth_service.dart';
 import 'package:ravel/services/firestore_service.dart';
 import 'package:ravel/services/geocoding_service.dart';
+import 'package:ravel/services/multi_image_picker_service.dart';
 import 'package:ravel/services/storage_service.dart';
 import 'package:provider/provider.dart';
 import 'package:ravel/services/file_picker_service.dart';
@@ -37,6 +38,9 @@ class Ravel extends StatelessWidget {
         ),
         Provider<FilePickerService>(
           create: (_) => FilePickerService(),
+        ),
+        Provider<MultiImagePickerService>(
+          create: (_) => MultiImagePickerService(),
         ),
       ],
       child: MaterialApp(

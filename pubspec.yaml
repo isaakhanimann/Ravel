@@ -22,8 +22,8 @@ dependencies:
   multi_image_picker: ^4.6.3
   file_picker: ^1.4.3+2
   uuid: ^2.0.4
-  flutter_full_pdf_viewer: ^1.0.6
   url_launcher: ^5.4.2
+  cached_network_image: ^2.0.0
 
 dev_dependencies:
   flutter_test:
