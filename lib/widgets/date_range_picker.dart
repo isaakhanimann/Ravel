@@ -19,12 +19,14 @@ class DateRangePicker extends StatefulWidget {
   final DateTime initialLastDate;
   final DateTime firstDate;
   final DateTime lastDate;
+  final Function onChanged;
 
   DateRangePicker({
     @required this.initialFirstDate,
     @required this.initialLastDate,
     @required this.firstDate,
     @required this.lastDate,
+    @required this.onChanged,
   });
 
   @override
@@ -46,7 +48,7 @@ class _DateRangePickerState extends State<DateRangePicker> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: _kMonthPickerPortraitWidth,
+      width: MediaQuery.of(context).size.width,
       child: new Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -69,6 +71,7 @@ class _DateRangePickerState extends State<DateRangePicker> {
       _selectedFirstDate = changes[0];
       _selectedLastDate = changes[1];
     });
+    widget.onChanged(changes);
   }
 
   Widget _buildPicker() {
