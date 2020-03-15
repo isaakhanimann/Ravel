@@ -134,8 +134,6 @@ class DayPickerSheet extends StatefulWidget {
 }
 
 class _DayPickerSheetState extends State<DayPickerSheet> {
-  final List<Text> items = [];
-  FixedExtentScrollController scrollController;
   Future<String> futureCity;
   int selectedNumber = 2;
 
@@ -147,13 +145,6 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
     futureCity = geocodingService.getCity(
         latitude: widget.bookPosition.latitude,
         longitude: widget.bookPosition.longitude);
-    scrollController = FixedExtentScrollController(initialItem: selectedNumber);
-    for (int i = 1; i < 21; i++) {
-      items.add(Text(
-        i.toString(),
-        style: TextStyle(fontFamily: 'OpenSansRegular', color: kDarkGrey),
-      ));
-    }
   }
 
   @override
@@ -192,17 +183,13 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
             ),
             Text(
               'How many days do you want to spend there?',
-              style: TextStyle(fontSize: 25, fontFamily: 'CatamaranSemiBold'),
+              style: TextStyle(
+                  fontSize: 25, fontFamily: 'CatamaranSemiBold', color: kGrey),
               textAlign: TextAlign.center,
             ),
-            SizedBox(
-              height: 120,
-              child: CupertinoPicker(
-                  scrollController: scrollController,
-                  backgroundColor: Colors.white,
-                  itemExtent: 30,
-                  onSelectedItemChanged: _onSelectedItemChanged,
-                  children: items),
+            DatePickerSection(
+              onSelectedItemChanged: _onSelectedItemChanged,
+              initialNumberSelected: selectedNumber,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -264,6 +251,49 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
 
   _onSelectedItemChanged(int indexOfItem) {
     selectedNumber = indexOfItem + 1;
+  }
+}
+
+class DatePickerSection extends StatefulWidget {
+  final Function onSelectedItemChanged;
+  final int initialNumberSelected;
+
+  DatePickerSection(
+      {@required this.onSelectedItemChanged,
+      @required this.initialNumberSelected});
+
+  @override
+  _DatePickerSectionState createState() => _DatePickerSectionState();
+}
+
+class _DatePickerSectionState extends State<DatePickerSection> {
+  final List<Text> items = [];
+  FixedExtentScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController =
+        FixedExtentScrollController(initialItem: widget.initialNumberSelected);
+    for (int i = 1; i < 21; i++) {
+      items.add(Text(
+        i.toString(),
+        style: TextStyle(fontFamily: 'OpenSansRegular', color: kGrey),
+      ));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 120,
+      child: CupertinoPicker(
+          scrollController: _scrollController,
+          backgroundColor: Colors.white,
+          itemExtent: 30,
+          onSelectedItemChanged: widget.onSelectedItemChanged,
+          children: items),
+    );
   }
 }
 
