@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:ravel/models/page.dart';
 import 'package:provider/provider.dart';
+import 'package:ravel/screens/image_screen.dart';
 import 'package:ravel/services/firestore_service.dart';
 import 'package:ravel/services/storage_service.dart';
 import 'package:ravel/models/book.dart';
@@ -313,15 +314,34 @@ class _ImagesSectionState extends State<ImagesSection> {
 
                 imageInfos = snapshot.data;
 
-                List<Widget> listOfImagesAndButton =
-                    List.from(imageInfos.map((info) => CachedNetworkImage(
+                List<Widget> listOfImagesAndButton = List.from(
+                  imageInfos.map(
+                    (info) => GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          CupertinoPageRoute<void>(
+                            builder: (context) {
+                              return ImageScreen(
+                                url: info.downloadUrl,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      child: Hero(
+                        tag: info.downloadUrl,
+                        child: CachedNetworkImage(
                           imageUrl: info.downloadUrl,
                           fit: BoxFit.fill,
                           placeholder: (context, url) =>
                               CupertinoActivityIndicator(),
                           errorWidget: (context, url, error) =>
                               Icon(Icons.error),
-                        )));
+                        ),
+                      ),
+                    ),
+                  ),
+                );
 
                 final button = CupertinoButton(
                   child: Icon(
