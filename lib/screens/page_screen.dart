@@ -48,6 +48,7 @@ class _PageScreenState extends State<PageScreen> {
         ),
       ],
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: SafeArea(
           bottom: false,
           left: false,
@@ -139,7 +140,14 @@ class _PageTextState extends State<PageText> {
         ),
         CupertinoButton(
           padding: EdgeInsets.all(0),
-          child: Text('Save'),
+          child: Text(
+            'Save',
+            style: TextStyle(
+              fontSize: 18,
+              fontFamily: 'OpenSansRegular',
+              color: kGreen,
+            ),
+          ),
           onPressed: _uploadText,
         )
       ],
@@ -205,18 +213,25 @@ class _FilesSectionState extends State<FilesSection> {
 
               return Wrap(
                 alignment: WrapAlignment.start,
-                crossAxisAlignment: WrapCrossAlignment.start,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 direction: Axis.horizontal,
                 children: <Widget>[
                   for (FileInfo fileInfo in fileInfos)
                     CupertinoButton(
                       child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 22, vertical: 12),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 30, vertical: 8),
                           decoration: BoxDecoration(
-                              color: kLightGrey,
+                              color: kLightGreen,
                               borderRadius: BorderRadius.circular(30)),
-                          child: Text(fileInfo.fileName)),
+                          child: Text(
+                            fileInfo.fileName,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'OpenSansSemiBold',
+                              color: kGreen,
+                            ),
+                          )),
                       onPressed: () {
                         //view file
                         _launchURL(url: fileInfo.downloadUrl);
@@ -295,7 +310,7 @@ class _ImagesSectionState extends State<ImagesSection> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
           child: Text(
             'Images',
             style: kPageSubsectionTitle,
@@ -356,7 +371,7 @@ class _ImagesSectionState extends State<ImagesSection> {
                 if (listOfImagesAndButton.length == 1) {
                   return Wrap(
                     alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.start,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     direction: Axis.horizontal,
                     children: <Widget>[button],
                   );
