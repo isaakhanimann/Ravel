@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:ravel/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:ravel/services/geocoding_service.dart';
+import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
+import 'package:ravel/widgets/date_range_picker.dart';
 
 class MapScreen extends StatefulWidget {
   @override
@@ -68,6 +70,16 @@ class _MapScreenState extends State<MapScreen> {
 
   _onTapMap(LatLng position) async {
     String loggedInUid = Provider.of<String>(context, listen: false);
+
+//    final List<DateTime> picked = await DateRagePicker.showDatePicker(
+//        context: context,
+//        initialFirstDate: new DateTime.now(),
+//        initialLastDate: (new DateTime.now()).add(new Duration(days: 7)),
+//        firstDate: new DateTime(2015),
+//        lastDate: new DateTime(2022));
+//    if (picked != null && picked.length == 2) {
+//      print(picked);
+//    }
 
     _showBottomSheet(
       child: DayPickerSheet(
@@ -148,88 +160,100 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
         longitude: widget.bookPosition.longitude);
   }
 
+  _onChanged(List<DateTime> dates) {
+    print('dates changed!!!!!!!!!!!!!!!!!');
+    print(dates);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(20, 35, 20, 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            SizedBox(
-              height: 60,
-              child: FutureBuilder(
-                future: futureCity,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done) {
-                    return CupertinoActivityIndicator();
-                  }
-                  if (snapshot.hasError) {
-                    return Container(
-                      color: Colors.red,
-                      child: const Text('Something went wrong'),
-                    );
-                  }
-                  String city = snapshot.data;
-                  if (city == null || city == '') {
-                    city = 'Unknown Place';
-                  }
-
-                  return Text(city, style: kSheetTitle);
-                },
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              'How many days do you want to spend there?',
-              style: TextStyle(
-                  fontSize: 25, fontFamily: 'CatamaranSemiBold', color: kGrey),
-              textAlign: TextAlign.center,
-            ),
-            DatePickerSection(
-              onSelectedItemChanged: _onSelectedItemChanged,
-              initialNumberSelected: selectedNumber,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                CupertinoButton(
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'OpenSansBold',
-                      color: Colors.black,
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                RightButton(
-                  text: 'Add',
-                  onPressed: () async {
-                    Book book = await _addBook(position: widget.bookPosition);
-                    Navigator.pop(context);
-                    Navigator.of(context).push(
-                      CupertinoPageRoute<void>(
-                        builder: (context) {
-                          return AddBookContentScreens(
-                            book: book,
-                          );
-                        },
-                      ),
-                    );
-                  },
-                )
-              ],
-            )
-          ],
-        ),
-      ),
+    return DateRangePicker(
+      initialFirstDate: DateTime.now(),
+      initialLastDate: DateTime.utc(2020, 3, 20, 20, 18, 04),
+      firstDate: DateTime.utc(2018, 7, 20, 20, 18, 04),
+      lastDate: DateTime.utc(2022, 7, 20, 20, 18, 04),
     );
+
+//    return SafeArea(
+//      child: Container(
+//        padding: const EdgeInsets.fromLTRB(20, 35, 20, 8),
+//        child: Column(
+//          mainAxisSize: MainAxisSize.min,
+//          children: <Widget>[
+//            SizedBox(
+//              height: 60,
+//              child: FutureBuilder(
+//                future: futureCity,
+//                builder: (context, snapshot) {
+//                  if (snapshot.connectionState != ConnectionState.done) {
+//                    return CupertinoActivityIndicator();
+//                  }
+//                  if (snapshot.hasError) {
+//                    return Container(
+//                      color: Colors.red,
+//                      child: const Text('Something went wrong'),
+//                    );
+//                  }
+//                  String city = snapshot.data;
+//                  if (city == null || city == '') {
+//                    city = 'Unknown Place';
+//                  }
+//
+//                  return Text(city, style: kSheetTitle);
+//                },
+//              ),
+//            ),
+//            SizedBox(
+//              height: 20,
+//            ),
+//            Text(
+//              'How many days do you want to spend there?',
+//              style: TextStyle(
+//                  fontSize: 25, fontFamily: 'CatamaranSemiBold', color: kGrey),
+//              textAlign: TextAlign.center,
+//            ),
+//            DatePickerSection(
+//              onSelectedItemChanged: _onSelectedItemChanged,
+//              initialNumberSelected: selectedNumber,
+//            ),
+//            Row(
+//              mainAxisAlignment: MainAxisAlignment.spaceAround,
+//              children: <Widget>[
+//                CupertinoButton(
+//                  child: Text(
+//                    'Cancel',
+//                    style: TextStyle(
+//                      fontSize: 20,
+//                      fontFamily: 'OpenSansBold',
+//                      color: Colors.black,
+//                    ),
+//                  ),
+//                  onPressed: () {
+//                    Navigator.pop(context);
+//                  },
+//                ),
+//                RightButton(
+//                  text: 'Add',
+//                  onPressed: () async {
+//                    Book book = await _addBook(position: widget.bookPosition);
+//                    Navigator.pop(context);
+//                    Navigator.of(context).push(
+//                      CupertinoPageRoute<void>(
+//                        builder: (context) {
+//                          return AddBookContentScreens(
+//                            book: book,
+//                          );
+//                        },
+//                      ),
+//                    );
+//                  },
+//                )
+//              ],
+//            )
+//          ],
+//        ),
+//      ),
+//    );
   }
 
   Future<Book> _addBook({LatLng position}) async {
