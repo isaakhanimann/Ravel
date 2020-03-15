@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 //colors
 const kYellow = Color(0xffFFCA4F);
-const kBrightYellow = Color(0xffFFE05C);
+const kLightYellow = Color(0x33FFCA4F);
 const kGreen = Color(0xff20D0C2);
 const kLightGreen = Color(0x4420D0C2);
 const kRed = Color(0xffFF5B61);

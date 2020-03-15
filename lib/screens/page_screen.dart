@@ -48,7 +48,7 @@ class _PageScreenState extends State<PageScreen> {
         ),
       ],
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
           bottom: false,
           left: false,
@@ -92,16 +92,14 @@ class _PageScreenState extends State<PageScreen> {
 class PageBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0),
           child: PageText(),
         ),
-        Expanded(
-          child: Container(
-            color: Colors.transparent,
-          ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 3,
         ),
         FilesSection(),
         ImagesSection(),
@@ -135,8 +133,9 @@ class _PageTextState extends State<PageText> {
           decoration: BoxDecoration(border: null),
           style: TextStyle(fontSize: 15, fontFamily: 'OpenSansRegular'),
           autofocus: true,
-          maxLines: 10,
-          minLines: 1,
+          minLines: null,
+          maxLines: null,
+          expands: true,
         ),
         CupertinoButton(
           padding: EdgeInsets.all(0),
@@ -316,75 +315,64 @@ class _ImagesSectionState extends State<ImagesSection> {
             style: kPageSubsectionTitle,
           ),
         ),
-        SizedBox(
-          height: 200,
-          width: double.infinity,
-          child: StreamBuilder(
-              stream: imageInfoStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting ||
-                    snapshot.connectionState == ConnectionState.none) {
-                  return Center(child: CupertinoActivityIndicator());
-                }
+        StreamBuilder(
+            stream: imageInfoStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting ||
+                  snapshot.connectionState == ConnectionState.none) {
+                return Center(child: CupertinoActivityIndicator());
+              }
 
-                imageInfos = snapshot.data;
+              imageInfos = snapshot.data;
 
-                List<Widget> listOfImagesAndButton = List.from(
-                  imageInfos.map(
-                    (info) => GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          CupertinoPageRoute<void>(
-                            builder: (context) {
-                              return ImageScreen(
-                                url: info.downloadUrl,
-                              );
-                            },
-                          ),
-                        );
-                      },
-                      child: Hero(
-                        tag: info.downloadUrl,
-                        child: CachedNetworkImage(
-                          imageUrl: info.downloadUrl,
-                          fit: BoxFit.fill,
-                          placeholder: (context, url) =>
-                              CupertinoActivityIndicator(),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
+              List<Widget> listOfImagesAndButton = List.from(
+                imageInfos.map(
+                  (info) => GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute<void>(
+                          builder: (context) {
+                            return ImageScreen(
+                              url: info.downloadUrl,
+                            );
+                          },
                         ),
+                      );
+                    },
+                    child: Hero(
+                      tag: info.downloadUrl,
+                      child: CachedNetworkImage(
+                        imageUrl: info.downloadUrl,
+                        fit: BoxFit.fill,
+                        placeholder: (context, url) =>
+                            CupertinoActivityIndicator(),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
                     ),
                   ),
-                );
+                ),
+              );
 
-                final button = CupertinoButton(
+              listOfImagesAndButton.add(Container(
+                color: kLightYellow,
+                child: CupertinoButton(
                   child: Icon(
                     Icons.add_circle_outline,
                     size: 35,
-                    color: kGreen,
+                    color: kYellow,
                   ),
                   onPressed: _onAddImageButtonPressed,
-                );
-                listOfImagesAndButton.add(button);
+                ),
+              ));
 
-                if (listOfImagesAndButton.length == 1) {
-                  return Wrap(
-                    alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    direction: Axis.horizontal,
-                    children: <Widget>[button],
-                  );
-                }
-
-                return GridView.count(
-                  mainAxisSpacing: 0,
-                  crossAxisSpacing: 0,
-                  crossAxisCount: 3,
-                  children: listOfImagesAndButton,
-                );
-              }),
-        ),
+              return GridView.count(
+                shrinkWrap: true,
+                mainAxisSpacing: 0,
+                crossAxisSpacing: 0,
+                crossAxisCount: 3,
+                children: listOfImagesAndButton,
+              );
+            }),
       ],
     );
   }
