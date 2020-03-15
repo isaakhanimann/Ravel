@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math' as math;
+import 'package:ravel/constants.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -337,11 +339,11 @@ class _MonthPickerState extends State<MonthPicker>
               sortKey: _MonthPickerSortKey.previousMonth,
               child: new FadeTransition(
                 opacity: _chevronOpacityAnimation,
-                child: new IconButton(
-                  icon: const Icon(Icons.chevron_left),
-                  tooltip: _isDisplayingFirstMonth
-                      ? null
-                      : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
+                child: new CupertinoButton(
+                  child: const Icon(
+                    Icons.chevron_left,
+                    color: kRed,
+                  ),
                   onPressed:
                       _isDisplayingFirstMonth ? null : _handlePreviousMonth,
                 ),
@@ -355,11 +357,11 @@ class _MonthPickerState extends State<MonthPicker>
               sortKey: _MonthPickerSortKey.nextMonth,
               child: new FadeTransition(
                 opacity: _chevronOpacityAnimation,
-                child: new IconButton(
-                  icon: const Icon(Icons.chevron_right),
-                  tooltip: _isDisplayingLastMonth
-                      ? null
-                      : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
+                child: new CupertinoButton(
+                  child: const Icon(
+                    Icons.chevron_right,
+                    color: kRed,
+                  ),
                   onPressed: _isDisplayingLastMonth ? null : _handleNextMonth,
                 ),
               ),
@@ -560,7 +562,8 @@ class DayPicker extends StatelessWidget {
             (selectableDayPredicate != null &&
                 !selectableDayPredicate(dayToBuild));
         BoxDecoration decoration;
-        TextStyle itemStyle = themeData.textTheme.body1;
+        TextStyle itemStyle =
+            TextStyle(fontSize: 12, fontFamily: 'OpenSansRegular');
         final bool isSelectedFirstDay = selectedFirstDate.year == year &&
             selectedFirstDate.month == month &&
             selectedFirstDate.day == day;
@@ -576,13 +579,12 @@ class DayPicker extends StatelessWidget {
         if (isSelectedFirstDay &&
             (isSelectedLastDay == null || isSelectedLastDay)) {
           itemStyle = themeData.accentTextTheme.body2;
-          decoration = new BoxDecoration(
-              color: themeData.accentColor, shape: BoxShape.circle);
+          decoration = new BoxDecoration(color: kRed, shape: BoxShape.circle);
         } else if (isSelectedFirstDay) {
           // The selected day gets a circle background highlight, and a contrasting text color.
           itemStyle = themeData.accentTextTheme.body2;
           decoration = new BoxDecoration(
-              color: themeData.accentColor,
+              color: kRed,
               borderRadius: BorderRadius.only(
                 topLeft: new Radius.circular(50.0),
                 bottomLeft: new Radius.circular(50.0),
@@ -590,15 +592,14 @@ class DayPicker extends StatelessWidget {
         } else if (isSelectedLastDay != null && isSelectedLastDay) {
           itemStyle = themeData.accentTextTheme.body2;
           decoration = new BoxDecoration(
-              color: themeData.accentColor,
+              color: kRed,
               borderRadius: BorderRadius.only(
                 topRight: new Radius.circular(50.0),
                 bottomRight: new Radius.circular(50.0),
               ));
         } else if (isInRange != null && isInRange) {
-          decoration = new BoxDecoration(
-              color: themeData.accentColor.withOpacity(0.1),
-              shape: BoxShape.rectangle);
+          decoration =
+              new BoxDecoration(color: kLightRed, shape: BoxShape.rectangle);
         } else if (disabled) {
           itemStyle = themeData.textTheme.body1
               .copyWith(color: themeData.disabledColor);
@@ -606,8 +607,7 @@ class DayPicker extends StatelessWidget {
             currentDate.month == month &&
             currentDate.day == day) {
           // The current day gets a different text color.
-          itemStyle =
-              themeData.textTheme.body2.copyWith(color: themeData.accentColor);
+          itemStyle = themeData.textTheme.body2.copyWith(color: kRed);
         }
 
         Widget dayWidget = new Container(
@@ -659,30 +659,27 @@ class DayPicker extends StatelessWidget {
       }
     }
 
-    return new Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: new Column(
-        children: <Widget>[
-          new Container(
-            height: _kDayPickerRowHeight,
-            child: new Center(
-              child: new ExcludeSemantics(
-                child: new Text(
-                  localizations.formatMonthYear(displayedMonth),
-                  style: themeData.textTheme.subhead,
-                ),
+    return new Column(
+      children: <Widget>[
+        new Container(
+          height: _kDayPickerRowHeight,
+          child: new Center(
+            child: new ExcludeSemantics(
+              child: new Text(
+                localizations.formatMonthYear(displayedMonth),
+                style: TextStyle(fontSize: 16, fontFamily: 'OpenSansSemiBold'),
               ),
             ),
           ),
-          new Flexible(
-            child: new GridView.custom(
-              gridDelegate: _kDayPickerGridDelegate,
-              childrenDelegate: new SliverChildListDelegate(labels,
-                  addRepaintBoundaries: false),
-            ),
+        ),
+        new Flexible(
+          child: new GridView.custom(
+            gridDelegate: _kDayPickerGridDelegate,
+            childrenDelegate: new SliverChildListDelegate(labels,
+                addRepaintBoundaries: false),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
