@@ -89,7 +89,7 @@ class _MapScreenState extends State<MapScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30.0),
       ),
-      backgroundColor: kBrightYellow,
+      backgroundColor: Colors.white,
       builder: (context) => child,
     );
   }
@@ -187,6 +187,9 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
                 },
               ),
             ),
+            SizedBox(
+              height: 20,
+            ),
             Text(
               'How many days do you want to spend there?',
               style: TextStyle(fontSize: 25, fontFamily: 'CatamaranSemiBold'),
@@ -196,7 +199,7 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
               height: 120,
               child: CupertinoPicker(
                   scrollController: scrollController,
-                  backgroundColor: kBrightYellow,
+                  backgroundColor: Colors.white,
                   itemExtent: 30,
                   onSelectedItemChanged: _onSelectedItemChanged,
                   children: items),
@@ -209,23 +212,16 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
                     'Cancel',
                     style: TextStyle(
                       fontSize: 20,
-                      fontFamily: 'OpenSansRegular',
-                      color: kGreen,
+                      fontFamily: 'OpenSansBold',
+                      color: Colors.black,
                     ),
                   ),
                   onPressed: () {
                     Navigator.pop(context);
                   },
                 ),
-                CupertinoButton(
-                  child: Text(
-                    'Add',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'OpenSansBold',
-                      color: kGreen,
-                    ),
-                  ),
+                RightButton(
+                  text: 'Add',
                   onPressed: () async {
                     Book book = await _addBook(position: widget.bookPosition);
                     Navigator.pop(context);
@@ -239,7 +235,7 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
                       ),
                     );
                   },
-                ),
+                )
               ],
             )
           ],
@@ -279,73 +275,96 @@ class BookInfoSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(20, 35, 20, 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              book.city,
+              style: kSheetTitle,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              'Time of stay: ${book.numberOfPages.toString()} days',
+              style: TextStyle(
+                fontFamily: 'OpenSansRegular',
+                fontSize: 20,
+                color: kGrey,
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                CupertinoButton(
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'OpenSansBold',
+                      color: kRed,
+                    ),
+                  ),
+                  onPressed: () async {
+                    final firestoreService =
+                        Provider.of<FirestoreService>(context, listen: false);
+                    await firestoreService.deleteBook(book: book);
+                    Navigator.pop(context);
+                  },
+                ),
+                RightButton(
+                  text: 'Edit',
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    Navigator.of(context).push(
+                      CupertinoPageRoute<void>(
+                        builder: (context) {
+                          return AddBookContentScreens(
+                            book: book,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RightButton extends StatelessWidget {
+  final String text;
+  final Function onPressed;
+
+  RightButton({@required this.text, @required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
         child: Container(
-      padding: const EdgeInsets.fromLTRB(20, 35, 20, 8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Text(
-            book.city,
-            style: kSheetTitle,
+          padding: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: kLightGreen,
           ),
-          SizedBox(
-            height: 20,
-          ),
-          Text(
-            'Time of stay: ${book.numberOfPages.toString()} days',
+          child: Text(
+            text,
             style: TextStyle(
-              fontFamily: 'OpenSansRegular',
-              fontSize: 20,
+              fontSize: 25,
+              fontFamily: 'OpenSansBold',
+              color: kGreen,
             ),
           ),
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              CupertinoButton(
-                child: Text(
-                  'Delete',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: 'OpenSansRegular',
-                    color: kRed,
-                  ),
-                ),
-                onPressed: () async {
-                  final firestoreService =
-                      Provider.of<FirestoreService>(context, listen: false);
-                  await firestoreService.deleteBook(book: book);
-                  Navigator.pop(context);
-                },
-              ),
-              CupertinoButton(
-                child: Text(
-                  'Edit',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: 'OpenSansBold',
-                    color: kGreen,
-                  ),
-                ),
-                onPressed: () async {
-                  Navigator.pop(context);
-                  Navigator.of(context).push(
-                    CupertinoPageRoute<void>(
-                      builder: (context) {
-                        return AddBookContentScreens(
-                          book: book,
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-            ],
-          )
-        ],
-      ),
-    ));
+        ),
+        onPressed: onPressed);
   }
 }
