@@ -3,12 +3,14 @@ import 'dart:io';
 class Page {
   String text;
   int pageNumber;
+  DateTime date;
   List<FileInfo> fileInfos;
   List<FileInfo> imageInfos;
 
   Page({
     this.text,
     this.pageNumber,
+    this.date,
     this.fileInfos,
     this.imageInfos,
   });
@@ -16,6 +18,7 @@ class Page {
   Page.fromMap({Map<String, dynamic> map}) {
     this.text = map['text'];
     this.pageNumber = map['pageNumber'];
+    this.date = map['date']?.toDate();
     this.fileInfos =
         _convertFirebaseListOfFileInfos(firebaseList: map['fileInfos']);
     this.imageInfos =
@@ -26,6 +29,7 @@ class Page {
     return {
       'text': text,
       'pageNumber': pageNumber,
+      'date': date,
       'fileInfos': fileInfos?.map((FileInfo f) => f.toMap())?.toList(),
       'imageInfos': imageInfos?.map((FileInfo i) => i.toMap())?.toList(),
     };
@@ -35,6 +39,7 @@ class Page {
   String toString() {
     String toPrint = '\n{ text: $text, ';
     toPrint += 'pageNumber: $pageNumber, ';
+    toPrint += 'date: $date, ';
     toPrint += 'fileInfos: $fileInfos, ';
     toPrint += 'imageInfos: $imageInfos }\n';
     return toPrint;

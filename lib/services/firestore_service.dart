@@ -14,8 +14,10 @@ class FirestoreService {
           .document(null); //if the books id is null its added
       book.bookId = ref.documentID;
       await ref.setData(book.toMap(), merge: true);
-      for (int i = 1; i <= book.numberOfPages; i++) {
-        Page page = Page(text: '', pageNumber: i, imageInfos: []);
+      for (int i = 0; i < book.numberOfPages; i++) {
+        DateTime date = book.fromDate.add(Duration(days: i));
+        Page page =
+            Page(text: '', pageNumber: i + 1, imageInfos: [], date: date);
         _addPage(bookId: book.bookId, page: page);
       }
     } catch (e) {

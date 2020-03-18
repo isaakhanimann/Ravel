@@ -140,8 +140,8 @@ class DayPickerSheet extends StatefulWidget {
 
 class _DayPickerSheetState extends State<DayPickerSheet> {
   Future<String> futureCity;
-  int selectedNumber = 2;
-  List<DateTime> fromAndToDate;
+  DateTime fromDate = DateTime.now().add(Duration(days: 5));
+  DateTime toDate = DateTime.now().add(Duration(days: 7));
   bool isAddButtonEnabled = true;
 
   @override
@@ -155,12 +155,13 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
   }
 
   _onChanged(List<DateTime> dates) {
-    fromAndToDate = dates;
-    if ((dates[0] == null || dates[1] == null) && isAddButtonEnabled) {
+    fromDate = dates[0];
+    toDate = dates[1];
+    if ((fromDate == null || toDate == null) && isAddButtonEnabled) {
       setState(() {
         isAddButtonEnabled = false;
       });
-    } else if (dates[0] != null && dates[1] != null && !isAddButtonEnabled) {
+    } else if (fromDate != null && toDate != null && !isAddButtonEnabled) {
       setState(() {
         isAddButtonEnabled = true;
       });
@@ -206,10 +207,10 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
               height: 20,
             ),
             DateRangePicker(
-              initialFirstDate: DateTime.now(),
-              initialLastDate: DateTime.utc(2020, 3, 20, 20, 18, 04),
-              firstDate: DateTime.utc(2018, 7, 20, 20, 18, 04),
-              lastDate: DateTime.utc(2022, 7, 20, 20, 18, 04),
+              initialFirstDate: fromDate,
+              initialLastDate: toDate,
+              firstDate: DateTime.utc(1950, 7, 20, 20, 18, 04),
+              lastDate: DateTime.utc(2040, 7, 20, 20, 18, 04),
               onChanged: _onChanged,
             ),
             Row(
@@ -234,14 +235,16 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
                   text: 'Add',
                   onPressed: () async {
                     String city = await futureCity;
+                    int differenceInDays = toDate.difference(fromDate).inDays;
+                    int numberOfPages = differenceInDays + 1;
 
                     Book book = Book(
                         ownerUid: widget.loggedInUid,
                         city: city,
-                        fromDate: fromAndToDate[0],
-                        toDate: fromAndToDate[1],
+                        fromDate: fromDate,
+                        toDate: toDate,
                         title: 'Title',
-                        numberOfPages: selectedNumber,
+                        numberOfPages: numberOfPages,
                         content: 'Content',
                         location: GeoPoint(widget.bookPosition.latitude,
                             widget.bookPosition.longitude),
