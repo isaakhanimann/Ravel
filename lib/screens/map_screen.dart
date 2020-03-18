@@ -141,6 +141,8 @@ class DayPickerSheet extends StatefulWidget {
 class _DayPickerSheetState extends State<DayPickerSheet> {
   Future<String> futureCity;
   int selectedNumber = 2;
+  List<DateTime> fromAndToDate;
+  bool isAddButtonEnabled = true;
 
   @override
   void initState() {
@@ -153,8 +155,16 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
   }
 
   _onChanged(List<DateTime> dates) {
-    //todo store the dates in the state so they can be used later
-    print('dates = dates');
+    fromAndToDate = dates;
+    if ((dates[0] == null || dates[1] == null) && isAddButtonEnabled) {
+      setState(() {
+        isAddButtonEnabled = false;
+      });
+    } else if (dates[0] != null && dates[1] != null && !isAddButtonEnabled) {
+      setState(() {
+        isAddButtonEnabled = true;
+      });
+    }
   }
 
   @override
@@ -216,6 +226,7 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
                   },
                 ),
                 RightButton(
+                  isEnabled: isAddButtonEnabled,
                   text: 'Add',
                   onPressed: () async {
                     Book book = await _addBook(position: widget.bookPosition);
@@ -309,6 +320,7 @@ class BookInfoSheet extends StatelessWidget {
                   },
                 ),
                 RightButton(
+                  isEnabled: true,
                   text: 'Edit',
                   onPressed: () async {
                     Navigator.pop(context);
@@ -335,29 +347,32 @@ class BookInfoSheet extends StatelessWidget {
 class RightButton extends StatelessWidget {
   final String text;
   final Function onPressed;
+  final bool isEnabled;
 
-  RightButton({@required this.text, @required this.onPressed});
+  RightButton(
+      {@required this.text,
+      @required this.onPressed,
+      @required this.isEnabled});
 
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
-        padding: EdgeInsets.all(0),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            color: kLightGreen,
-          ),
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 25,
-              fontFamily: 'OpenSansBold',
-              color: kGreen,
-            ),
+        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+        color: isEnabled ? kLightGreen : CupertinoColors.systemGrey5,
+        borderRadius: BorderRadius.circular(30),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 25,
+            fontFamily: 'OpenSansBold',
+            color: isEnabled ? kGreen : CupertinoColors.inactiveGray,
           ),
         ),
-        onPressed: onPressed);
+        onPressed: () {
+          if (isEnabled) {
+            onPressed();
+          }
+        });
   }
 }
 

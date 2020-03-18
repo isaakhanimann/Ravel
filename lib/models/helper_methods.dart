@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 
 class HelperMethods {
   static String convertTimeToString({@required DateTime time}) {
+    if (time == null) {
+      return '';
+    }
     String stringTime = '${time.day}. ${_shortMonths[time.month]} ${time.year}';
 
     return stringTime;
