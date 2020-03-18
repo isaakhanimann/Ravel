@@ -191,15 +191,6 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
             SizedBox(
               height: 20,
             ),
-            Text(
-              'When do you want to go there?',
-              style: TextStyle(
-                  fontSize: 25, fontFamily: 'CatamaranSemiBold', color: kGrey),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(
-              height: 20,
-            ),
             DateRangePicker(
               initialFirstDate: DateTime.now(),
               initialLastDate: DateTime.utc(2020, 3, 20, 20, 18, 04),

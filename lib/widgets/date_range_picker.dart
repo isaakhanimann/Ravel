@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:ravel/constants.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:ravel/models/helper_methods.dart';
 
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -55,9 +56,12 @@ class _DateRangePickerState extends State<DateRangePicker> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _DatePickerHeader(
-              selectedFirstDate: _selectedFirstDate,
-              selectedLastDate: _selectedLastDate),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 15),
+            child: _DatePickerHeader(
+                selectedFirstDate: _selectedFirstDate,
+                selectedLastDate: _selectedLastDate),
+          ),
           SizedBox(
             height: _kMaxDayPickerHeight,
             child: _buildPicker(),
@@ -102,10 +106,17 @@ class _DatePickerHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        Text(selectedFirstDate.toString()),
-        Text(selectedLastDate.toString()),
+        Text(
+          HelperMethods.convertTimeToString(time: selectedFirstDate),
+          style: kTimeTextStyle,
+        ),
+        Text('-', style: kTimeTextStyle),
+        Text(
+          HelperMethods.convertTimeToString(time: selectedLastDate),
+          style: kTimeTextStyle,
+        ),
       ],
     );
   }
