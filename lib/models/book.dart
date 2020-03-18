@@ -8,6 +8,8 @@ class Book {
   String content = '';
   GeoPoint location;
   String city = '';
+  DateTime fromDate;
+  DateTime toDate;
   var whenCreated;
 
   Book(
@@ -18,6 +20,8 @@ class Book {
       this.content,
       this.location,
       this.city,
+      this.fromDate,
+      this.toDate,
       this.whenCreated});
 
   Book.fromMap({Map<String, dynamic> map}) {
@@ -28,6 +32,8 @@ class Book {
     this.content = map['content'];
     this.location = map['location'];
     this.city = map['city'];
+    this.fromDate = map['fromDate']?.toDate();
+    this.toDate = map['toDate']?.toDate();
     this.whenCreated = map['whenCreated']?.toDate();
   }
 
@@ -40,6 +46,8 @@ class Book {
       'content': content,
       'location': location,
       'city': city,
+      'fromDate': fromDate,
+      'toDate': toDate,
       'whenCreated': whenCreated,
     };
   }
@@ -53,6 +61,8 @@ class Book {
     toPrint += 'content: $content, ';
     toPrint += 'location: $location, ';
     toPrint += 'city: $city, ';
+    toPrint += 'fromDate: $fromDate, ';
+    toPrint += 'toDate: $toDate, ';
     toPrint += 'whenCreated: $whenCreated }\n';
     return toPrint;
   }

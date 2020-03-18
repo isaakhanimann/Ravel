@@ -194,7 +194,11 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
                     city = 'Unknown Place';
                   }
 
-                  return Text(city, style: kSheetTitle);
+                  return Text(
+                    city,
+                    style: kSheetTitle,
+                    overflow: TextOverflow.ellipsis,
+                  );
                 },
               ),
             ),
@@ -229,7 +233,23 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
                   isEnabled: isAddButtonEnabled,
                   text: 'Add',
                   onPressed: () async {
-                    Book book = await _addBook(position: widget.bookPosition);
+                    String city = await futureCity;
+
+                    Book book = Book(
+                        ownerUid: widget.loggedInUid,
+                        city: city,
+                        fromDate: fromAndToDate[0],
+                        toDate: fromAndToDate[1],
+                        title: 'Title',
+                        numberOfPages: selectedNumber,
+                        content: 'Content',
+                        location: GeoPoint(widget.bookPosition.latitude,
+                            widget.bookPosition.longitude),
+                        whenCreated: FieldValue.serverTimestamp());
+
+                    final firestoreService =
+                        Provider.of<FirestoreService>(context, listen: false);
+                    await firestoreService.addBookWithPages(book: book);
                     Navigator.pop(context);
                     Navigator.of(context).push(
                       CupertinoPageRoute<void>(
@@ -248,24 +268,6 @@ class _DayPickerSheetState extends State<DayPickerSheet> {
         ),
       ),
     );
-  }
-
-  Future<Book> _addBook({LatLng position}) async {
-    String city = await futureCity;
-
-    Book book = Book(
-        ownerUid: widget.loggedInUid,
-        city: city,
-        title: 'Title',
-        numberOfPages: selectedNumber,
-        content: 'Content',
-        location: GeoPoint(position.latitude, position.longitude),
-        whenCreated: FieldValue.serverTimestamp());
-    final firestoreService =
-        Provider.of<FirestoreService>(context, listen: false);
-    await firestoreService.addBookWithPages(book: book);
-
-    return book;
   }
 }
 
