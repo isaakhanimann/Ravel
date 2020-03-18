@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:ravel/constants.dart';
+import 'package:ravel/models/helper_methods.dart';
 import 'package:ravel/screens/add_book_content_screens.dart';
 import 'package:ravel/models/book.dart';
 import 'package:provider/provider.dart';
@@ -295,7 +296,7 @@ class BookInfoSheet extends StatelessWidget {
               height: 20,
             ),
             Text(
-              'Time of stay: ${book.numberOfPages.toString()} days',
+              '${HelperMethods.convertTimeToString(time: book.fromDate)}     -     ${HelperMethods.convertTimeToString(time: book.toDate)}',
               style: TextStyle(
                 fontFamily: 'OpenSansRegular',
                 fontSize: 20,

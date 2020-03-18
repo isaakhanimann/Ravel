@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:ravel/models/helper_methods.dart';
 import 'package:ravel/models/page.dart';
 import 'package:provider/provider.dart';
 import 'package:ravel/screens/image_screen.dart';
@@ -53,35 +54,23 @@ class _PageScreenState extends State<PageScreen> {
           bottom: false,
           left: false,
           right: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Text(
-                'Day ${widget.pageNumber}',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 40, fontFamily: 'CatamaranBold'),
-              ),
-              Expanded(
-                child: FutureBuilder(
-                  future: futurePage,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState != ConnectionState.done) {
-                      return CupertinoActivityIndicator();
-                    }
-                    if (snapshot.hasError) {
-                      return Container(
-                        color: Colors.red,
-                        child: const Text('Something went wrong'),
-                      );
-                    }
-                    editedPage = snapshot.data;
+          child: FutureBuilder(
+            future: futurePage,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return CupertinoActivityIndicator();
+              }
+              if (snapshot.hasError) {
+                return Container(
+                  color: Colors.red,
+                  child: const Text('Something went wrong'),
+                );
+              }
+              editedPage = snapshot.data;
 
-                    return Provider<Page>.value(
-                        value: editedPage, child: PageBody());
-                  },
-                ),
-              ),
-            ],
+              return Provider<Page>.value(
+                  value: editedPage, child: PageScreenWithPageData());
+            },
           ),
         ),
       ),
@@ -89,20 +78,40 @@ class _PageScreenState extends State<PageScreen> {
   }
 }
 
-class PageBody extends StatelessWidget {
+class PageScreenWithPageData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    Page page = Provider.of<Page>(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          child: PageText(),
+        RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(style: DefaultTextStyle.of(context).style, children: [
+            TextSpan(
+                text: 'Day ${page.pageNumber} ',
+                style: TextStyle(fontSize: 40, fontFamily: 'CatamaranBold')),
+            TextSpan(
+              text: HelperMethods.convertTimeToString(time: page.date),
+              style: TextStyle(fontSize: 12, fontFamily: 'OpenSansRegular'),
+            ),
+          ]),
         ),
-        SizedBox(
-          height: MediaQuery.of(context).size.height / 3,
+        Expanded(
+          child: ListView(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: PageText(),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 3,
+              ),
+              FilesSection(),
+              ImagesSection(),
+            ],
+          ),
         ),
-        FilesSection(),
-        ImagesSection(),
       ],
     );
   }
