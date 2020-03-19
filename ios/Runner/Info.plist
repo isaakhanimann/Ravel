@@ -12,6 +12,8 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>ravel</string>
+	<key>CFBundleDisplayName</key>
+	<string>Ravel</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -44,8 +46,8 @@
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
-    <string>Ravel wants to add images to your book</string>
-    <key>NSCameraUsageDescription</key>
-    <string>Ravel wants to make photos that you can use in your book</string>
+	<string>Ravel wants to add images to your book</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Ravel wants to make photos that you can use in your book</string>
 </dict>
 </plist>
