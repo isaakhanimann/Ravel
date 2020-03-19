@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:ravel/constants.dart';
 import 'package:ravel/screens/map_screen.dart';
 import 'explanation_one.dart';
 import 'explanation_two.dart';
@@ -22,12 +23,13 @@ class ExplanationScreens extends StatelessWidget {
           ],
         ),
         Positioned(
-          top: 25,
+          bottom: 25,
           right: 0,
           child: CupertinoButton(
             padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
             child: Text(
               'Skip',
+              style: TextStyle(color: kGreen),
             ),
             onPressed: () {
               Navigator.of(context, rootNavigator: true).push(
@@ -46,7 +48,8 @@ class ExplanationScreens extends StatelessWidget {
             controller: pageController, // PageController
             count: 3,
             effect: WormEffect(
-              dotColor: CupertinoColors.white,
+              activeDotColor: kGreen,
+              dotColor: kLightGreen,
             ),
             // your preferred effect
           ),

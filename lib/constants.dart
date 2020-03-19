@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 //colors
 const kYellow = Color(0xffFFCA4F);
@@ -17,7 +17,16 @@ const kSheetTitle = TextStyle(
     fontSize: 50,
     fontFamily: 'CatamaranBold',
     height: 1.3,
-    color: CupertinoColors.black);
+    color: Colors.black);
+
+const kExplanationTitle = TextStyle(
+    fontSize: 40,
+    fontFamily: 'CatamaranBold',
+    height: 1.1,
+    color: Colors.black);
+
+const kExplanationSubTitle =
+    TextStyle(fontSize: 18, fontFamily: 'MuliRegular', color: Colors.black45);
 
 const kPageSubsectionTitle =
     TextStyle(fontFamily: 'CatamaranBold', fontSize: 35);
