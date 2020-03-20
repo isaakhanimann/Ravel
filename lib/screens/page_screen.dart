@@ -363,72 +363,107 @@ class _ImagesSectionState extends State<ImagesSection> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting ||
                   snapshot.connectionState == ConnectionState.none) {
-                return Center(child: CupertinoActivityIndicator());
+                double lengthOfOneGridItem =
+                    MediaQuery.of(context).size.width / 3;
+                return Center(
+                  child: SizedBox(
+                    height: lengthOfOneGridItem,
+                    width: lengthOfOneGridItem,
+                    child: CupertinoActivityIndicator(),
+                  ),
+                );
               }
 
               imageInfos = snapshot.data;
 
-              List<Widget> listOfImagesAndButton = List.from(
-                imageInfos.map(
-                  (imageInfo) => GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        CupertinoPageRoute<void>(
-                          builder: (context) {
-                            return ImageScreen(
-                              url: imageInfo.downloadUrl,
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    onLongPressStart: (LongPressStartDetails details) async {
-                      Offset pos = details.globalPosition;
-                      RelativeRect rectangular =
-                          RelativeRect.fromLTRB(pos.dx, pos.dy, 1000, 1000);
-                      bool shouldDelete = await HelperMethods.showDelete(
-                          context: context, position: rectangular);
-                      if (shouldDelete) {
-                        _deleteImage(
-                            context: context,
-                            downloadUrl: imageInfo.downloadUrl);
-                      }
-                    },
-                    child: Hero(
-                      tag: imageInfo.downloadUrl,
-                      child: CachedNetworkImage(
-                        imageUrl: imageInfo.downloadUrl,
-                        fit: BoxFit.fill,
-                        placeholder: (context, url) =>
-                            CupertinoActivityIndicator(),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-
-              listOfImagesAndButton.add(Container(
-                color: kTransparentYellow,
-                child: CupertinoButton(
-                  child: Icon(
-                    Icons.add_circle_outline,
-                    size: 35,
-                    color: kYellow,
-                  ),
-                  onPressed: _onAddImageButtonPressed,
-                ),
-              ));
-
-              return GridView.count(
-                shrinkWrap: true,
-                mainAxisSpacing: 0,
-                crossAxisSpacing: 0,
-                crossAxisCount: 3,
-                children: listOfImagesAndButton,
-              );
+              return ImageGrid(imageInfos: imageInfos);
             }),
       ],
+    );
+  }
+}
+
+class ImageGrid extends StatefulWidget {
+  final List<FileInfo> imageInfos;
+
+  ImageGrid({@required this.imageInfos});
+
+  @override
+  _ImageGridState createState() => _ImageGridState();
+}
+
+class _ImageGridState extends State<ImageGrid> {
+  bool isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      double lengthOfOneGridItem = MediaQuery.of(context).size.width / 3;
+      return Center(
+        child: SizedBox(
+          height: lengthOfOneGridItem,
+          width: lengthOfOneGridItem,
+          child: CupertinoActivityIndicator(),
+        ),
+      );
+    }
+    List<Widget> listOfImagesAndButton = List.from(
+      widget.imageInfos.map(
+        (imageInfo) => GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              CupertinoPageRoute<void>(
+                builder: (context) {
+                  return ImageScreen(
+                    url: imageInfo.downloadUrl,
+                  );
+                },
+              ),
+            );
+          },
+          onLongPressStart: (LongPressStartDetails details) async {
+            Offset pos = details.globalPosition;
+            RelativeRect rectangular =
+                RelativeRect.fromLTRB(pos.dx, pos.dy, 1000, 1000);
+            bool shouldDelete = await HelperMethods.showDelete(
+                context: context, position: rectangular);
+            if (shouldDelete) {
+              _deleteImage(
+                  context: context, downloadUrl: imageInfo.downloadUrl);
+            }
+          },
+          child: Hero(
+            tag: imageInfo.downloadUrl,
+            child: CachedNetworkImage(
+              imageUrl: imageInfo.downloadUrl,
+              fit: BoxFit.fill,
+              placeholder: (context, url) => CupertinoActivityIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    listOfImagesAndButton.add(
+      Container(
+        color: kTransparentYellow,
+        child: CupertinoButton(
+          child: Icon(
+            Icons.add_circle_outline,
+            size: 35,
+            color: kYellow,
+          ),
+          onPressed: _onAddImageButtonPressed,
+        ),
+      ),
+    );
+    return GridView.count(
+      shrinkWrap: true,
+      mainAxisSpacing: 0,
+      crossAxisSpacing: 0,
+      crossAxisCount: 3,
+      children: listOfImagesAndButton,
     );
   }
 
@@ -438,7 +473,7 @@ class _ImagesSectionState extends State<ImagesSection> {
     final pageNumber = Provider.of<int>(context, listen: false);
 
     //delete from firestore
-    List<FileInfo> newImageInfos = List.from(imageInfos);
+    List<FileInfo> newImageInfos = List.from(widget.imageInfos);
     newImageInfos
         .removeWhere((imageInfo) => imageInfo.downloadUrl == downloadUrl);
     final firestoreService =
@@ -457,6 +492,10 @@ class _ImagesSectionState extends State<ImagesSection> {
         Provider.of<MultiImagePickerService>(context, listen: false);
     List<Asset> imagesPicked = await imagePickerService.getImages();
 
+    setState(() {
+      isLoading = true;
+    });
+
     //upload them to storage
     final storageService = Provider.of<StorageService>(context, listen: false);
     final book = Provider.of<Book>(context, listen: false);
@@ -464,12 +503,17 @@ class _ImagesSectionState extends State<ImagesSection> {
     for (Asset image in imagesPicked) {
       String downloadUrl = await storageService.uploadImage(
           bookId: book.bookId, pageNumber: pageNumber, image: image);
-      imageInfos.add(FileInfo(downloadUrl: downloadUrl));
+      widget.imageInfos.add(FileInfo(downloadUrl: downloadUrl));
     }
     //update the pages imageInfos
     final firestoreService =
         Provider.of<FirestoreService>(context, listen: false);
     firestoreService.updateImageInfos(
-        bookId: book.bookId, pageNumber: pageNumber, imageInfos: imageInfos);
+        bookId: book.bookId,
+        pageNumber: pageNumber,
+        imageInfos: widget.imageInfos);
+    setState(() {
+      isLoading = false;
+    });
   }
 }
