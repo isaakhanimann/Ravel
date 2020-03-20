@@ -23,35 +23,39 @@ class ExplanationScreens extends StatelessWidget {
           ],
         ),
         Positioned(
-          bottom: 25,
+          bottom: 0,
           right: 0,
-          child: CupertinoButton(
-            padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
-            child: Text(
-              'Skip',
-              style: TextStyle(color: kGreen),
+          child: SafeArea(
+            child: CupertinoButton(
+              padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
+              child: Text(
+                'Skip',
+                style: TextStyle(color: kGreen),
+              ),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).push(
+                  CupertinoPageRoute<void>(
+                    builder: (context) {
+                      return NavigationScreen();
+                    },
+                  ),
+                );
+              },
             ),
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).push(
-                CupertinoPageRoute<void>(
-                  builder: (context) {
-                    return NavigationScreen();
-                  },
-                ),
-              );
-            },
           ),
         ),
         Positioned(
-          bottom: 50,
-          child: SmoothPageIndicator(
-            controller: pageController, // PageController
-            count: 3,
-            effect: WormEffect(
-              activeDotColor: kGreen,
-              dotColor: kLightGreen,
+          bottom: 10,
+          child: SafeArea(
+            child: SmoothPageIndicator(
+              controller: pageController, // PageController
+              count: 3,
+              effect: WormEffect(
+                activeDotColor: kGreen,
+                dotColor: kLightGreen,
+              ),
+              // your preferred effect
             ),
-            // your preferred effect
           ),
         )
       ],
