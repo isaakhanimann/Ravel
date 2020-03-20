@@ -28,7 +28,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     if (loggedInUid == null) {
       return MapScreenLoading();
     }
-    return Provider<String>.value(value: loggedInUid, child: MapScreen());
+    return MapScreen(loggedUid: loggedInUid);
   }
 
   _getUid() async {

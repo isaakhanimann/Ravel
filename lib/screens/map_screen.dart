@@ -12,6 +12,10 @@ import 'package:ravel/services/geocoding_service.dart';
 import 'package:ravel/widgets/date_range_picker.dart';
 
 class MapScreen extends StatefulWidget {
+  final String loggedUid;
+
+  MapScreen({@required this.loggedUid});
+
   @override
   _MapScreenState createState() => _MapScreenState();
 }
@@ -27,8 +31,7 @@ class _MapScreenState extends State<MapScreen> {
     _setCustomPin();
     final firestoreService =
         Provider.of<FirestoreService>(context, listen: false);
-    final loggedInUid = Provider.of<String>(context, listen: false);
-    streamOfBooks = firestoreService.getStreamOfBooks(uid: loggedInUid);
+    streamOfBooks = firestoreService.getStreamOfBooks(uid: widget.loggedUid);
   }
 
   @override
@@ -71,12 +74,10 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   _onTapMap({BuildContext context, LatLng position}) async {
-    String loggedInUid = Provider.of<String>(context, listen: false);
-
     _showBottomSheet(
       child: DayPickerSheet(
         bookPosition: position,
-        loggedInUid: loggedInUid,
+        loggedInUid: widget.loggedUid,
       ),
     );
   }
