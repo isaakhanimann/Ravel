@@ -47,4 +47,15 @@ class StorageService {
       return null;
     }
   }
+
+  deleteImageOrFile({@required String downloadUrl}) async {
+    try {
+      StorageReference reference =
+          await FirebaseStorage().getReferenceFromUrl(downloadUrl);
+      await reference.delete();
+    } catch (e) {
+      print('Could not delete file with downloadUrl = $downloadUrl');
+      print(e);
+    }
+  }
 }
