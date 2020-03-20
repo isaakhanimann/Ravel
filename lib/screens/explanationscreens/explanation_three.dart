@@ -24,25 +24,12 @@ class ExplanationThree extends StatelessWidget {
                 height: 60,
               ),
               Text(
-                'Describe your plans for that day',
+                'Describe your plans for that day. Put all the documents you need into the page.During the trip add images to be remembered.',
                 style: kExplanationSubTitle,
                 textAlign: TextAlign.center,
               ),
               SizedBox(
-                height: 20,
-              ),
-              Text(
-                'Put all the documents you need into the page',
-                style: kExplanationSubTitle,
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                'During the trip add images to be remembered',
-                style: kExplanationSubTitle,
-                textAlign: TextAlign.center,
+                height: 50,
               ),
             ],
           ),

@@ -19,6 +19,13 @@ class ExplanationTwo extends StatelessWidget {
                 style: kExplanationTitle,
                 textAlign: TextAlign.center,
               ),
+              SizedBox(
+                height: 70,
+              ),
+              Flexible(child: Image.asset('assets/images/daterange.png')),
+              SizedBox(
+                height: 50,
+              ),
             ],
           ),
         ),

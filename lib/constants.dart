@@ -25,8 +25,11 @@ const kExplanationTitle = TextStyle(
     height: 1.1,
     color: Colors.black);
 
-const kExplanationSubTitle =
-    TextStyle(fontSize: 18, fontFamily: 'MuliRegular', color: Colors.black45);
+const kExplanationSubTitle = TextStyle(
+    fontSize: 18,
+    fontFamily: 'MuliRegular',
+    color: Colors.black45,
+    height: 1.2);
 
 const kPageSubsectionTitle =
     TextStyle(fontFamily: 'CatamaranBold', fontSize: 35);

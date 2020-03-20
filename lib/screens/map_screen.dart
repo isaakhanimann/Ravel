@@ -123,7 +123,7 @@ class _MapScreenState extends State<MapScreen> {
   _setCustomPin() async {
     if (customPin == null) {
       BitmapDescriptor icon = await BitmapDescriptor.fromAssetImage(
-          ImageConfiguration(devicePixelRatio: 10), 'assets/book.png');
+          ImageConfiguration(devicePixelRatio: 10), 'assets/images/book.png');
       customPin = icon;
     }
   }
