@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:ravel/constants.dart';
-import 'package:ravel/screens/map_screen.dart';
+import 'package:ravel/screens/navigation_screen.dart';
 import 'explanation_one.dart';
 import 'explanation_two.dart';
 import 'explanation_three.dart';
@@ -35,7 +35,7 @@ class ExplanationScreens extends StatelessWidget {
               Navigator.of(context, rootNavigator: true).push(
                 CupertinoPageRoute<void>(
                   builder: (context) {
-                    return MapScreen();
+                    return NavigationScreen();
                   },
                 ),
               );
