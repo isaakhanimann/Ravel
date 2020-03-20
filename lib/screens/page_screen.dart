@@ -225,24 +225,56 @@ class _FilesSectionState extends State<FilesSection> {
                 direction: Axis.horizontal,
                 children: <Widget>[
                   for (FileInfo fileInfo in fileInfos)
-                    CupertinoButton(
-                      child: Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 30, vertical: 8),
-                          decoration: BoxDecoration(
-                              color: kLightGreen,
-                              borderRadius: BorderRadius.circular(30)),
-                          child: Text(
-                            fileInfo.fileName,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontFamily: 'OpenSansSemiBold',
-                              color: kGreen,
-                            ),
-                          )),
-                      onPressed: () {
+                    GestureDetector(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 8),
+                            decoration: BoxDecoration(
+                                color: kLightGreen,
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Text(
+                              fileInfo.fileName,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: 'OpenSansSemiBold',
+                                color: kGreen,
+                              ),
+                            )),
+                      ),
+                      onTap: () {
                         //view file
                         _launchURL(url: fileInfo.downloadUrl);
+                      },
+                      onLongPressStart: (LongPressStartDetails details) async {
+                        Offset pos = details.globalPosition;
+                        RelativeRect rectangular =
+                            RelativeRect.fromLTRB(pos.dx, pos.dy, 1000, 1000);
+                        String shouldDelete = await showMenu(
+                            elevation: 0,
+                            color: kLightRed,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            context: context,
+                            position: rectangular,
+                            items: [
+                              PopupMenuItem<String>(
+                                child: Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                      fontFamily: 'OpenSansBold',
+                                      fontSize: 15,
+                                      color: kRed),
+                                ),
+                                value: 'delete',
+                              )
+                            ]);
+                        if (shouldDelete == 'delete') {
+                          _deleteFile(
+                              context: context,
+                              downloadUrl: fileInfo.downloadUrl);
+                        }
                       },
                     ),
                   CupertinoButton(
@@ -260,6 +292,24 @@ class _FilesSectionState extends State<FilesSection> {
         )
       ],
     );
+  }
+
+  _deleteFile(
+      {@required BuildContext context, @required String downloadUrl}) async {
+    final book = Provider.of<Book>(context, listen: false);
+    final pageNumber = Provider.of<int>(context, listen: false);
+
+    //delete from firestore
+    List<FileInfo> newFileInfos = List.from(fileInfos);
+    newFileInfos.removeWhere((fileInfo) => fileInfo.downloadUrl == downloadUrl);
+    final firestoreService =
+        Provider.of<FirestoreService>(context, listen: false);
+    await firestoreService.updateFileInfos(
+        bookId: book.bookId, pageNumber: pageNumber, fileInfos: newFileInfos);
+
+    //delete from storage
+    final storageService = Provider.of<StorageService>(context, listen: false);
+    storageService.deleteImageOrFile(downloadUrl: downloadUrl);
   }
 
   _launchURL({@required String url}) async {
