@@ -365,7 +365,7 @@ class RightButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoButton(
         padding: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-        color: isEnabled ? kLightGreen : CupertinoColors.systemGrey5,
+        color: isEnabled ? kTransparentGreen : CupertinoColors.systemGrey5,
         borderRadius: BorderRadius.circular(30),
         child: Text(
           text,

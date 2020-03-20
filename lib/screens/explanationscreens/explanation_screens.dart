@@ -52,7 +52,7 @@ class ExplanationScreens extends StatelessWidget {
               count: 3,
               effect: WormEffect(
                 activeDotColor: kGreen,
-                dotColor: kLightGreen,
+                dotColor: kTransparentGreen,
               ),
               // your preferred effect
             ),

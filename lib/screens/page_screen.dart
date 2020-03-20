@@ -232,7 +232,7 @@ class _FilesSectionState extends State<FilesSection> {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 8),
                             decoration: BoxDecoration(
-                                color: kLightGreen,
+                                color: kTransparentGreen,
                                 borderRadius: BorderRadius.circular(30)),
                             child: Text(
                               fileInfo.fileName,
@@ -251,26 +251,9 @@ class _FilesSectionState extends State<FilesSection> {
                         Offset pos = details.globalPosition;
                         RelativeRect rectangular =
                             RelativeRect.fromLTRB(pos.dx, pos.dy, 1000, 1000);
-                        String shouldDelete = await showMenu(
-                            elevation: 0,
-                            color: kLightRed,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            context: context,
-                            position: rectangular,
-                            items: [
-                              PopupMenuItem<String>(
-                                child: Text(
-                                  'Delete',
-                                  style: TextStyle(
-                                      fontFamily: 'OpenSansBold',
-                                      fontSize: 15,
-                                      color: kRed),
-                                ),
-                                value: 'delete',
-                              )
-                            ]);
-                        if (shouldDelete == 'delete') {
+                        bool shouldDelete = await HelperMethods.showDelete(
+                            context: context, position: rectangular);
+                        if (shouldDelete) {
                           _deleteFile(
                               context: context,
                               downloadUrl: fileInfo.downloadUrl);
@@ -386,22 +369,34 @@ class _ImagesSectionState extends State<ImagesSection> {
 
               List<Widget> listOfImagesAndButton = List.from(
                 imageInfos.map(
-                  (info) => GestureDetector(
+                  (imageInfo) => GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(
                         CupertinoPageRoute<void>(
                           builder: (context) {
                             return ImageScreen(
-                              url: info.downloadUrl,
+                              url: imageInfo.downloadUrl,
                             );
                           },
                         ),
                       );
                     },
+                    onLongPressStart: (LongPressStartDetails details) async {
+                      Offset pos = details.globalPosition;
+                      RelativeRect rectangular =
+                          RelativeRect.fromLTRB(pos.dx, pos.dy, 1000, 1000);
+                      bool shouldDelete = await HelperMethods.showDelete(
+                          context: context, position: rectangular);
+                      if (shouldDelete) {
+                        _deleteImage(
+                            context: context,
+                            downloadUrl: imageInfo.downloadUrl);
+                      }
+                    },
                     child: Hero(
-                      tag: info.downloadUrl,
+                      tag: imageInfo.downloadUrl,
                       child: CachedNetworkImage(
-                        imageUrl: info.downloadUrl,
+                        imageUrl: imageInfo.downloadUrl,
                         fit: BoxFit.fill,
                         placeholder: (context, url) =>
                             CupertinoActivityIndicator(),
@@ -413,7 +408,7 @@ class _ImagesSectionState extends State<ImagesSection> {
               );
 
               listOfImagesAndButton.add(Container(
-                color: kLightYellow,
+                color: kTransparentYellow,
                 child: CupertinoButton(
                   child: Icon(
                     Icons.add_circle_outline,
@@ -434,6 +429,25 @@ class _ImagesSectionState extends State<ImagesSection> {
             }),
       ],
     );
+  }
+
+  _deleteImage(
+      {@required BuildContext context, @required String downloadUrl}) async {
+    final book = Provider.of<Book>(context, listen: false);
+    final pageNumber = Provider.of<int>(context, listen: false);
+
+    //delete from firestore
+    List<FileInfo> newImageInfos = List.from(imageInfos);
+    newImageInfos
+        .removeWhere((imageInfo) => imageInfo.downloadUrl == downloadUrl);
+    final firestoreService =
+        Provider.of<FirestoreService>(context, listen: false);
+    await firestoreService.updateImageInfos(
+        bookId: book.bookId, pageNumber: pageNumber, imageInfos: newImageInfos);
+
+    //delete from storage
+    final storageService = Provider.of<StorageService>(context, listen: false);
+    storageService.deleteImageOrFile(downloadUrl: downloadUrl);
   }
 
   _onAddImageButtonPressed() async {

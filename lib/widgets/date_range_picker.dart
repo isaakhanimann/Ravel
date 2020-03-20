@@ -609,8 +609,8 @@ class DayPicker extends StatelessWidget {
                 bottomRight: new Radius.circular(50.0),
               ));
         } else if (isInRange != null && isInRange) {
-          decoration =
-              new BoxDecoration(color: kLightRed, shape: BoxShape.rectangle);
+          decoration = new BoxDecoration(
+              color: kTransparentRed, shape: BoxShape.rectangle);
         } else if (disabled) {
           itemStyle = themeData.textTheme.body1
               .copyWith(color: themeData.disabledColor);

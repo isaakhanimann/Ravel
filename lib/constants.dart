@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 //colors
 const kYellow = Color(0xffFFCA4F);
-const kLightYellow = Color(0x33FFCA4F);
+const kTransparentYellow = Color(0x33FFCA4F);
 const kGreen = Color(0xff20D0C2);
-const kLightGreen = Color(0x4420D0C2);
+const kTransparentGreen = Color(0x4420D0C2);
 const kRed = Color(0xffFF5B61);
-const kLightRed = Color(0x44FF5B61);
+const kLightRed = Color(0xffffd6d8);
+const kTransparentRed = Color(0x44FF5B61);
 const kGrey = Color(0xff989898);
 const kLightGrey = Color(0xffDFE1E3);
 const kVeryLightGrey = Color(0xffECF0F1);
