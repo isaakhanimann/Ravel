@@ -101,7 +101,8 @@ class PageScreenWithPageData extends StatelessWidget {
           child: ListView(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
                 child: PageText(),
               ),
               SizedBox(
@@ -134,31 +135,31 @@ class _PageTextState extends State<PageText> {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.end,
-      children: <Widget>[
-        CupertinoTextField(
-          controller: _textEditingController,
-          decoration: BoxDecoration(border: null),
-          style: TextStyle(fontSize: 15, fontFamily: 'OpenSansRegular'),
-          autofocus: true,
-          minLines: null,
-          maxLines: null,
-          expands: true,
+    return CupertinoTextField(
+      placeholder: 'Enter some text here...',
+      suffix: CupertinoButton(
+        onPressed: _uploadText,
+        child: Icon(
+          Icons.save,
+          color: kYellow,
         ),
-        CupertinoButton(
-          padding: EdgeInsets.all(0),
-          child: Text(
-            'Save',
-            style: TextStyle(
-              fontSize: 18,
-              fontFamily: 'OpenSansRegular',
-              color: kGreen,
-            ),
-          ),
-          onPressed: _uploadText,
-        )
-      ],
+      ),
+      placeholderStyle:
+          TextStyle(fontSize: 15, fontFamily: 'OpenSansRegular', color: kGrey),
+      keyboardType: TextInputType.multiline,
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      controller: _textEditingController,
+      decoration: BoxDecoration(
+        border: null,
+        color: kTransparentYellow,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      style: TextStyle(
+          fontSize: 15, fontFamily: 'OpenSansRegular', color: Colors.black87),
+      autofocus: true,
+      minLines: null,
+      maxLines: null,
+      expands: true,
     );
   }
 
