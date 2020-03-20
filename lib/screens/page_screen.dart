@@ -220,60 +220,82 @@ class _FilesSectionState extends State<FilesSection> {
 
               fileInfos = snapshot.data;
 
-              return Wrap(
-                alignment: WrapAlignment.start,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                direction: Axis.horizontal,
-                children: <Widget>[
-                  for (FileInfo fileInfo in fileInfos)
-                    GestureDetector(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 8),
-                            decoration: BoxDecoration(
-                                color: kTransparentGreen,
-                                borderRadius: BorderRadius.circular(30)),
-                            child: Text(
-                              fileInfo.fileName,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: 'OpenSansSemiBold',
-                                color: kGreen,
-                              ),
-                            )),
-                      ),
-                      onTap: () {
-                        //view file
-                        _launchURL(url: fileInfo.downloadUrl);
-                      },
-                      onLongPressStart: (LongPressStartDetails details) async {
-                        Offset pos = details.globalPosition;
-                        RelativeRect rectangular =
-                            RelativeRect.fromLTRB(pos.dx, pos.dy, 1000, 1000);
-                        bool shouldDelete = await HelperMethods.showDelete(
-                            context: context, position: rectangular);
-                        if (shouldDelete) {
-                          _deleteFile(
-                              context: context,
-                              downloadUrl: fileInfo.downloadUrl);
-                        }
-                      },
-                    ),
-                  CupertinoButton(
-                    child: Icon(
-                      Icons.add_circle_outline,
-                      size: 35,
-                      color: kGreen,
-                    ),
-                    onPressed: _onAddFilesPressed,
-                  ),
-                ],
-              );
+              return FileList(fileInfos: fileInfos);
             },
           ),
         )
+      ],
+    );
+  }
+}
+
+class FileList extends StatefulWidget {
+  final List<FileInfo> fileInfos;
+
+  FileList({@required this.fileInfos});
+
+  @override
+  _FileListState createState() => _FileListState();
+}
+
+class _FileListState extends State<FileList> {
+  bool isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return Center(
+        child: CupertinoActivityIndicator(),
+      );
+    }
+
+    return Wrap(
+      alignment: WrapAlignment.start,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      direction: Axis.horizontal,
+      children: <Widget>[
+        for (FileInfo fileInfo in widget.fileInfos)
+          GestureDetector(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                  decoration: BoxDecoration(
+                      color: kTransparentGreen,
+                      borderRadius: BorderRadius.circular(30)),
+                  child: Text(
+                    fileInfo.fileName,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'OpenSansSemiBold',
+                      color: kGreen,
+                    ),
+                  )),
+            ),
+            onTap: () {
+              //view file
+              _launchURL(url: fileInfo.downloadUrl);
+            },
+            onLongPressStart: (LongPressStartDetails details) async {
+              Offset pos = details.globalPosition;
+              RelativeRect rectangular =
+                  RelativeRect.fromLTRB(pos.dx, pos.dy, 1000, 1000);
+              bool shouldDelete = await HelperMethods.showDelete(
+                  context: context, position: rectangular);
+              if (shouldDelete) {
+                _deleteFile(
+                    context: context, downloadUrl: fileInfo.downloadUrl);
+              }
+            },
+          ),
+        CupertinoButton(
+          child: Icon(
+            Icons.add_circle_outline,
+            size: 35,
+            color: kGreen,
+          ),
+          onPressed: _onAddFilesPressed,
+        ),
       ],
     );
   }
@@ -284,7 +306,7 @@ class _FilesSectionState extends State<FilesSection> {
     final pageNumber = Provider.of<int>(context, listen: false);
 
     //delete from firestore
-    List<FileInfo> newFileInfos = List.from(fileInfos);
+    List<FileInfo> newFileInfos = List.from(widget.fileInfos);
     newFileInfos.removeWhere((fileInfo) => fileInfo.downloadUrl == downloadUrl);
     final firestoreService =
         Provider.of<FirestoreService>(context, listen: false);
@@ -309,6 +331,10 @@ class _FilesSectionState extends State<FilesSection> {
     final filePickerService =
         Provider.of<FilePickerService>(context, listen: false);
     List<File> filesPicked = await filePickerService.getFiles();
+
+    setState(() {
+      isLoading = true;
+    });
     //upload them to storage
     final storageService = Provider.of<StorageService>(context, listen: false);
     final book = Provider.of<Book>(context, listen: false);
@@ -316,13 +342,20 @@ class _FilesSectionState extends State<FilesSection> {
     for (File file in filesPicked) {
       String downloadUrl = await storageService.uploadFile(
           bookId: book.bookId, pageNumber: pageNumber, file: file);
-      fileInfos.add(FileInfo.fromFile(file: file, downloadUrl: downloadUrl));
+      widget.fileInfos
+          .add(FileInfo.fromFile(file: file, downloadUrl: downloadUrl));
     }
     //update the pages fileInfos
     final firestoreService =
         Provider.of<FirestoreService>(context, listen: false);
     firestoreService.updateFileInfos(
-        bookId: book.bookId, pageNumber: pageNumber, fileInfos: fileInfos);
+        bookId: book.bookId,
+        pageNumber: pageNumber,
+        fileInfos: widget.fileInfos);
+
+    setState(() {
+      isLoading = false;
+    });
   }
 }
 
