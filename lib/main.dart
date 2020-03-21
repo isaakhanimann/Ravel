@@ -62,7 +62,7 @@ class Ravel extends StatelessWidget {
               body1: TextStyle(fontSize: 12.0, fontFamily: 'OpenSansRegular'),
             ),
           ),
-          home: CupertinoPageScaffold(child: NavigationScreen()),
+          home: NavigationScreen(),
         ),
       ),
     );
