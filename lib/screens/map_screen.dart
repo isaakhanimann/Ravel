@@ -10,6 +10,8 @@ import 'package:ravel/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:ravel/services/geocoding_service.dart';
 import 'package:ravel/widgets/date_range_picker.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'profile_screen.dart';
 
 class MapScreen extends StatefulWidget {
   final String loggedUid;
@@ -44,9 +46,9 @@ class _MapScreenState extends State<MapScreen> {
           if (snapshot.connectionState == ConnectionState.waiting ||
               snapshot.connectionState == ConnectionState.none) {
             showLoading = true;
+          } else {
+            showLoading = false;
           }
-
-          showLoading = false;
 
           final List<Book> books = snapshot.data;
 
@@ -65,7 +67,49 @@ class _MapScreenState extends State<MapScreen> {
                     CameraPosition(target: LatLng(24.142, -110.321), zoom: 4),
                 markers: markers,
               ),
-              if (showLoading) Center(child: CupertinoActivityIndicator())
+              if (showLoading) Center(child: CupertinoActivityIndicator()),
+              SafeArea(
+                child: Column(
+                  children: <Widget>[
+                    CupertinoButton(
+                      child: Icon(
+                        FontAwesome5Solid.user,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        //todo navigate to profilescreen
+                        Navigator.of(context).push(
+                          CupertinoPageRoute<void>(
+                            builder: (context) {
+                              return ProfileScreen(
+                                loggedInUid: widget.loggedUid,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    CupertinoButton(
+                      child: Icon(
+                        FontAwesome5Solid.users,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        //todo choose which books to see
+                      },
+                    ),
+                    CupertinoButton(
+                      child: Icon(
+                        FontAwesome5Solid.inbox,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        //todo accept requests to see your books, send requests here
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ],
           );
         },
