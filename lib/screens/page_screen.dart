@@ -125,6 +125,7 @@ class PageText extends StatefulWidget {
 
 class _PageTextState extends State<PageText> {
   TextEditingController _textEditingController;
+  bool isCurrentTextSaved = true;
 
   @override
   void initState() {
@@ -138,10 +139,14 @@ class _PageTextState extends State<PageText> {
     return CupertinoTextField(
       placeholder: 'Enter some text here...',
       suffix: CupertinoButton(
-        onPressed: _uploadText,
+        onPressed: () {
+          if (!isCurrentTextSaved) {
+            _uploadText();
+          }
+        },
         child: Icon(
           Icons.save,
-          color: kYellow,
+          color: isCurrentTextSaved ? kGrey : kGreen,
         ),
       ),
       placeholderStyle:
@@ -160,10 +165,18 @@ class _PageTextState extends State<PageText> {
       minLines: null,
       maxLines: null,
       expands: true,
+      onChanged: (newText) {
+        setState(() {
+          isCurrentTextSaved = false;
+        });
+      },
     );
   }
 
   _uploadText() async {
+    setState(() {
+      isCurrentTextSaved = true;
+    });
     final firestoreService =
         Provider.of<FirestoreService>(context, listen: false);
     final book = Provider.of<Book>(context, listen: false);
