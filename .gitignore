@@ -1,3 +1,6 @@
+# sensitive data
+passwords.txt
+
 # Miscellaneous
 *.class
 *.log
